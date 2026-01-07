@@ -1,0 +1,5 @@
+# Agent Strategy Memory Directory
+# 此目录用于存储 Agent 策略记录文件 (strategy-*.md)
+# 
+# 文件命名规范: strategy-{task-name}-{date}.md
+# 示例: strategy-daily-world-refactor-2026-01-07.md
