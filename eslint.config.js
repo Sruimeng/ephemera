@@ -8,23 +8,23 @@ import { globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config([
+export default tseslint.config(
   globalIgnores(['dist', '.react-router/types/+routes.ts', 'public/static/video/**']),
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
+  jsxA11y.flatConfigs.recommended,
+  prettier,
+  unocss,
   {
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      react.configs.flat.recommended,
-      react.configs.flat['jsx-runtime'],
-      reactHooks.configs['recommended-latest'],
-      jsxA11y.flatConfigs.recommended,
-      prettier,
-      unocss,
-    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
     },
     rules: {
       'react/self-closing-comp': 'error',
@@ -49,4 +49,4 @@ export default tseslint.config([
       'spaced-comment': 'error',
     },
   },
-]);
+);

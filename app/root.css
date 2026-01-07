@@ -6,6 +6,16 @@
   --safe-area-inset-left: env(safe-area-inset-left);
 }
 
+/* 暗色主题：深空径向渐变背景 - 沉浸式空间 */
+body {
+  /* 核心：中心稍微亮一点（模拟光源），四周压暗（制造深邃空间） */
+  background: radial-gradient(circle at 50% 50%, #2b2d3a 0%, #101012 100%);
+  margin: 0;
+  min-height: 100dvh;
+  width: 100vw;
+  overflow: hidden; /* 防止滚动条出现破坏沉浸感 */
+}
+
 /* 2K分辨率及以上 */
 @media (width >= 2560px) {
   html {

@@ -1,10 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { data, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router';
-import { useChangeLanguage } from 'remix-i18next/react';
-import { PreventFlashOnWrongTheme, Theme, ThemeProvider, useTheme } from 'remix-themes';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { Theme, ThemeProvider, useTheme } from 'remix-themes';
 import 'virtual:uno.css';
-import { i18nCookie, i18nServer } from './.server/i18n.server';
-import { themeSessionResolver } from './.server/theme.server';
 import { Canonical, DefaultErrorBoundary } from './components';
 import './root.css';
 
@@ -18,14 +16,15 @@ export const links = () => {
   ];
 };
 
-export const loader = async ({ request }: any) => {
-  const { getTheme } = await themeSessionResolver(request);
-  const theme = getTheme() || Theme.DARK;
-  const locale = await i18nServer.getLocale(request);
-  const headers = new Headers();
-  headers.append('Set-Cookie', await i18nCookie.serialize(locale));
-  return data({ locale, theme }, { headers });
-};
+// 客户端获取主题
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return Theme.DARK;
+  const stored = localStorage.getItem('theme');
+  if (stored === 'light') return Theme.LIGHT;
+  if (stored === 'dark') return Theme.DARK;
+  // 跟随系统
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT;
+}
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
@@ -38,8 +37,21 @@ const App: React.FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <Meta />
         <Links />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(theme)} />
         <Canonical />
+        {/* 防止主题闪烁 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var theme = localStorage.getItem('theme');
+                if (!theme) {
+                  theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="select-none">
         <Outlet />
@@ -51,11 +63,21 @@ const App: React.FC = () => {
 };
 
 const AppWithProviders = () => {
-  const { theme, locale } = useLoaderData();
-  useChangeLanguage(locale);
+  const [theme, setTheme] = useState<Theme>(Theme.DARK);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setTheme(getInitialTheme());
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // 避免 hydration mismatch
+    return null;
+  }
 
   return (
-    <ThemeProvider specifiedTheme={theme} themeAction="/api/set-theme">
+    <ThemeProvider specifiedTheme={theme} themeAction="" disableTransitionOnThemeChange={false}>
       <App />
     </ThemeProvider>
   );
@@ -64,7 +86,7 @@ const AppWithProviders = () => {
 export const ErrorBoundary: React.FC = () => {
   try {
     return (
-      <ThemeProvider specifiedTheme={Theme.DARK} themeAction="/api/set-theme">
+      <ThemeProvider specifiedTheme={Theme.DARK} themeAction="">
         <DefaultErrorBoundary />
       </ThemeProvider>
     );
