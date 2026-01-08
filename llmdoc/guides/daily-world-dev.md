@@ -308,12 +308,14 @@ export function ModelViewer({ modelUrl, className }: ModelViewerProps) {
 // 标准 Canvas 配置
 <Canvas
   shadows                           // 启用阴影
+  gl={{ alpha: true }}             // 允许透明背景
   camera={{
     position: [0, 0, 5],           // 相机位置
     fov: 45                         // 视野角度
   }}
 >
-  <color attach="background" args={['#F5F5F7']} />
+  {/* 背景色由 CSS 控制 (极简灰白径向渐变) */}
+  {/* <color attach="background" args={['#F5F5F7']} /> */}
   {/* ... */}
 </Canvas>
 ```
@@ -384,9 +386,14 @@ function Model({ url }: { url: string }) {
 
 export function Scene({ modelUrl }: SceneProps) {
   return (
-    <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }}>
+    <Canvas 
+      shadows 
+      gl={{ alpha: true }}
+      camera={{ position: [0, 0, 5], fov: 45 }}
+    >
       {/* 1. 环境设置 */}
-      <color attach="background" args={['#F5F5F7']} />
+      {/* 背景色由 CSS 控制 (极简灰白径向渐变) */}
+      {/* <color attach="background" args={['#F5F5F7']} /> */}
       <Environment preset="city" />
       
       {/* 2. 模型加载与展示 */}
@@ -422,6 +429,36 @@ export function Scene({ modelUrl }: SceneProps) {
 参见 [`UI.md`](./UI.md) 获取完整设计规范。
 
 ```css
+/* 工业深灰风格背景 (增强对比度) */
+body {
+  background:
+    radial-gradient(circle at 50% 50%, #404040 0%, #262626 60%, #171717 100%);
+  color: #F5F5F5;
+}
+```
+
+#### Canvas 场景适配
+
+为了适配深灰背景，雾气颜色和光照需要微调：
+
+```tsx
+/* 1. 深色雾气 - 适配工业深灰背景 */
+<fog attach="fog" args={['#404040', 10, 50]} />
+
+/* 2. 环境反射 - 保持适中 */
+<Environment preset="city" environmentIntensity={0.5} />
+```
+
+#### UI 适配 (HUD)
+
+由于背景变暗，文字颜色需要反转回浅色：
+- **主要文字**: `#F5F5F5` (几乎纯白)
+- **次要文字**: `#D4D4D4` (浅灰)
+- **标签/装饰**: `#A3A3A3` (中浅灰)
+- **暗部装饰**: `#737373` (中灰)
+
+```css
+
 /* 磨砂玻璃效果 */
 .sruim-glass {
   background: rgba(255, 255, 255, 0.72);

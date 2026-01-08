@@ -1,13 +1,12 @@
 /**
- * 详情抽屉组件
- * 暗色主题 - Dark Glassmorphism
+ * HUD DetailSheet 组件
+ * Ephemera V2: Deep Space Terminal
  * @see llmdoc/guides/ephemera-prd.md
  */
 
 import type React from 'react';
 import { useEffect, useRef } from 'react';
 import type { NewsItem } from '~/types/api';
-import { GlassPanel } from './glass-card';
 
 interface DetailSheetProps {
   /** 是否打开 */
@@ -23,24 +22,8 @@ interface DetailSheetProps {
 }
 
 /**
- * 详情抽屉
- * 暗色主题玻璃材质
- *
- * 触发: 点击底部面板或 "Sources" 按钮
- * 动画: 底部向上滑动扩展 (iOS Sheet 风格)
- * 内容:
- *   - 今日新闻源: data.news[] 列表
- *   - Prompt Reveal: data.tripo_prompt (元艺术展示)
- *
- * @example
- * ```tsx
- * <DetailSheet
- *   isOpen={showDetail}
- *   onClose={() => setShowDetail(false)}
- *   news={data.news}
- *   tripoPrompt={data.tripoPrompt}
- * />
- * ```
+ * HUD 风格详情抽屉
+ * 终端风格，等宽字体，小圆角
  */
 export const DetailSheet: React.FC<DetailSheetProps> = ({
   isOpen,
@@ -51,7 +34,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  // 处理 ESC 键关闭
+  // ESC 键关闭
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -63,7 +46,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // 处理背景点击关闭
+  // 背景点击关闭
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -74,9 +57,9 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
 
   return (
     <>
-      {/* 背景遮罩: 更深的黑色 + 模糊 */}
+      {/* 背景遮罩 */}
       <div
-        className="fixed inset-0 z-50 animate-fade-in bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-50 animate-fade-in bg-black/60 backdrop-blur-sm"
         onClick={handleBackdropClick}
       />
 
@@ -90,46 +73,58 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
           ${className}
         `}
       >
-        <GlassPanel className="overflow-hidden rounded-b-none">
+        <div className="overflow-hidden hud-panel rounded-b-none">
           {/* 拖动指示器 */}
-          <div className="flex justify-center pb-2 pt-4">
-            <div className="h-1.5 w-12 rounded-full bg-white/20" />
+          <div className="flex justify-center py-3">
+            <div className="h-1 w-12 rounded-full bg-white/10" />
+          </div>
+
+          {/* 头部 */}
+          <div className="flex items-center justify-between border-b border-white/5 px-6 pb-4">
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
+                Data.Sources
+              </span>
+              <span className="text-xs text-[#3B82F6] font-mono">[{news.length}]</span>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="flex items-center gap-2 border border-white/10 rounded-sm px-3 py-1.5 text-[10px] text-[#808080] tracking-wider font-mono uppercase transition-all active:scale-95 hover:border-white/20 hover:text-[#A0A0A0]"
+            >
+              <span className="i-lucide-x h-3 w-3" />
+              <span>Close</span>
+              <span className="text-[#606060]">[ESC]</span>
+            </button>
           </div>
 
           {/* 可滚动内容区 */}
-          <div className="max-h-[calc(85vh-48px)] overflow-y-auto px-6 pb-8 safe-area-pb">
-            {/* 关闭按钮 */}
-            <div className="mb-4 flex justify-end">
-              <button
-                onClick={onClose}
-                className="rounded-full bg-white/10 p-2.5 text-[#A1A1A6] transition-all active:scale-95 hover:bg-white/20 hover:text-[#F5F5F7]"
-                aria-label="关闭"
-              >
-                <span className="i-lucide-x h-5 w-5" />
-              </button>
-            </div>
-
+          <div className="max-h-[calc(85vh-80px)] overflow-y-auto px-6 py-6 safe-area-pb scrollbar-thin">
             {/* 新闻源列表 */}
             <section className="mb-8">
-              <h3 className="mb-4 text-lg text-[#F5F5F7] font-semibold tracking-tight">
-                Today&apos;s Sources
-              </h3>
+              <div className="mb-4 flex items-center gap-3">
+                <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
+                  Input.News
+                </span>
+                <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
+              </div>
+
               <ul className="space-y-3">
                 {news.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 border border-white/10 rounded-2xl bg-white/5 p-4 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]"
-                  >
-                    <span className="h-6 w-6 flex flex-shrink-0 items-center justify-center rounded-full bg-[#54B6F5]/20 text-xs text-[#54B6F5] font-semibold">
-                      {index + 1}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-sm text-[#F5F5F7] font-medium leading-snug">
-                        {item.title}
-                      </h4>
-                      <p className="mt-1.5 text-xs text-[#A1A1A6] leading-relaxed">
-                        {item.content}
-                      </p>
+                  <li key={index} className="hud-card p-4">
+                    <div className="flex items-start gap-4">
+                      {/* 索引 */}
+                      <span className="text-xs text-[#3B82F6] font-mono tabular-nums">
+                        {(index + 1).toString().padStart(2, '0')}
+                      </span>
+
+                      {/* 内容 */}
+                      <div className="min-w-0 flex-1">
+                        <h4 className="mb-2 text-sm text-[#F5F5F5] font-medium leading-snug">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-[#909090] leading-relaxed">{item.content}</p>
+                      </div>
                     </div>
                   </li>
                 ))}
@@ -139,19 +134,26 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
             {/* Prompt Reveal */}
             {tripoPrompt && (
               <section>
-                <h3 className="mb-4 text-lg text-[#F5F5F7] font-semibold tracking-tight">
-                  Prompt Reveal
-                </h3>
-                <div className="overflow-x-auto rounded-2xl bg-black/40 p-5 text-sm text-[#54B6F5] leading-relaxed font-mono">
-                  {tripoPrompt}
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
+                    Output.Prompt
+                  </span>
+                  <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
                 </div>
-                <p className="mt-3 text-xs text-[#A1A1A6] leading-relaxed">
-                  This prompt was used to generate today&apos;s 3D artifact via Tripo AI.
+
+                <div className="hud-card p-4">
+                  <pre className="whitespace-pre-wrap break-words text-sm text-[#3B82F6] leading-relaxed font-mono">
+                    {tripoPrompt}
+                  </pre>
+                </div>
+
+                <p className="mt-3 text-[10px] text-[#707070] font-mono">
+                  {'// Generated via Tripo.AI → GLB Model'}
                 </p>
               </section>
             )}
           </div>
-        </GlassPanel>
+        </div>
       </div>
     </>
   );

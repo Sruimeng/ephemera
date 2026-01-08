@@ -1,19 +1,35 @@
+/* Ephemera V2: Deep Space Terminal */
+
+/* 字体加载 */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 /* 移动端安全距离变量 */
 :root {
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-right: env(safe-area-inset-right);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
+
+  /* HUD 色彩变量 - 适配深灰背景 */
+  --hud-accent: #3B82F6;
+  --hud-accent-dim: #1E40AF;
+  --hud-text: #F5F5F5;
+  --hud-text-dim: #D4D4D4;
+  --hud-text-muted: #A3A3A3;
+  --hud-bg: #1a1a2e;
 }
 
-/* 暗色主题：深空径向渐变背景 - 沉浸式空间 */
+/* 浅色极简风格背景 - 工业深灰 (增强对比度) */
 body {
-  /* 核心：中心稍微亮一点（模拟光源），四周压暗（制造深邃空间） */
-  background: radial-gradient(circle at 50% 50%, #2b2d3a 0%, #101012 100%);
+  background:
+    /* 径向渐变：由中深灰过渡到近黑，确保白色文字清晰可见 */
+    radial-gradient(circle at 50% 50%, #404040 0%, #262626 60%, #171717 100%);
   margin: 0;
   min-height: 100dvh;
   width: 100vw;
-  overflow: hidden; /* 防止滚动条出现破坏沉浸感 */
+  overflow: hidden;
+  color: #F5F5F5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* 2K分辨率及以上 */
@@ -36,8 +52,58 @@ body {
     font-size: max(calc(100vw / 768 * 16), 16px);
   }
 
-  /* 确保页面内容不被安全区域遮挡 */
   body {
     padding: var(--safe-area-inset-top) 0 var(--safe-area-inset-bottom) 0;
   }
+}
+
+/* HUD 扫描线效果 (可选叠加) */
+.hud-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.01) 2px,
+    rgba(255, 255, 255, 0.01) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* HUD 暗角效果 */
+.hud-vignette::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 10, 10, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* 选择高亮 */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: #E5E5E5;
 }

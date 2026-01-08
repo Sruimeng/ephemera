@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * Ephemera 首页
- * 数字美术馆 - 状态机控制
+ * Ephemera V2 首页
+ * Digital Art Gallery - Deep Space Terminal
  * @see llmdoc/guides/ephemera-prd.md
  */
 
@@ -10,34 +10,35 @@ import { useEffect } from 'react';
 import { FullscreenScene } from '~/components/canvas/scene';
 import { DetailSheet } from '~/components/ui/detail-sheet';
 import { TransparentHeader } from '~/components/ui/header';
-import { InsightPanel } from '~/components/ui/insight-panel';
+import { HudOverlay } from '~/components/ui/hud-decorations';
+import { InsightPanel, SourcesPanel } from '~/components/ui/insight-panel';
 import { LoadingScreen } from '~/components/ui/loading-screen';
 import { useDailyWorld } from '~/hooks/use-daily-world';
 import { useAppStore } from '~/store/use-app-store';
 
 /**
- * 错误视图组件
+ * 错误视图组件 - HUD 风格
  */
 function ErrorView({ error }: { error: Error | null }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] px-6">
       <div className="max-w-md text-center">
         {/* 错误图标 */}
-        <div className="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-red-100">
-          <span className="i-lucide-alert-circle h-8 w-8 text-red-500" />
-        </div>
+        <div className="mb-6 text-4xl text-[#EF4444] font-mono">[!]</div>
 
         {/* 错误标题 */}
-        <h1 className="mb-3 text-xl text-[#1D1D1F] font-semibold">Unable to Load</h1>
+        <h1 className="mb-3 text-lg text-[#E5E5E5] tracking-wider font-mono uppercase">
+          System.Error
+        </h1>
 
         {/* 错误信息 */}
-        <p className="mb-6 text-sm text-[#86868B]">
+        <p className="mb-6 text-sm text-[#525252] font-mono">
           {error?.message || '发生未知错误，请稍后重试'}
         </p>
 
         {/* 重试按钮 */}
-        <button onClick={() => window.location.reload()} className="btn-sruim">
-          Try Again
+        <button onClick={() => window.location.reload()} className="btn-hud">
+          Retry Connection
         </button>
       </div>
     </div>
@@ -69,22 +70,26 @@ export default function Index() {
 
   // 根据状态渲染不同视图
   return (
-    <main className="min-h-screen">
+    <main className="hud-vignette min-h-screen">
       {/* 加载状态 */}
-      {state === 'loading' && <LoadingScreen message="Constructing the Zeitgeist..." />}
+      {state === 'loading' && <LoadingScreen />}
 
       {/* 错误状态 */}
       {state === 'error' && <ErrorView error={error} />}
 
-      {/* Totem 状态: 3D 场景 + UI 覆盖层 */}
+      {/* Totem 状态: 3D 场景 + HUD 覆盖层 */}
       {state === 'totem' && data && (
         <>
           {/* 3D 场景 (全屏背景) */}
           <FullscreenScene modelUrl={data.modelUrl} />
 
+          {/* HUD 装饰层 */}
+          <HudOverlay />
+
           {/* UI 覆盖层 */}
           <TransparentHeader date={data.date} />
           <InsightPanel data={data} onExpand={openDetail} />
+          <SourcesPanel newsCount={data.news.length} onExpand={openDetail} />
         </>
       )}
 
@@ -93,6 +98,9 @@ export default function Index() {
         <>
           {/* 3D 场景 (全屏背景) */}
           <FullscreenScene modelUrl={data.modelUrl} />
+
+          {/* HUD 装饰层 */}
+          <HudOverlay />
 
           {/* UI 覆盖层 */}
           <TransparentHeader date={data.date} />
@@ -117,5 +125,6 @@ export function meta() {
   return [
     { title: 'Ephemera | Digital Art Gallery' },
     { name: 'description', content: "Daily AI-generated 3D art reflecting the world's zeitgeist" },
+    { name: 'theme-color', content: '#050505' },
   ];
 }

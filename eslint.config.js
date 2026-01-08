@@ -9,7 +9,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  globalIgnores(['dist', '.react-router/types/+routes.ts', 'public/static/video/**']),
+  globalIgnores(['dist', '.react-router', 'public/static/video/**']),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
