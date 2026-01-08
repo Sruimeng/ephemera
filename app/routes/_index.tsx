@@ -77,37 +77,27 @@ export default function Index() {
       {/* 错误状态 */}
       {state === 'error' && <ErrorView error={error} />}
 
-      {/* Totem 状态: 3D 场景 + HUD 覆盖层 */}
-      {state === 'totem' && data && (
+      {/* 正常状态 (Totem/Detail) - 保持 Scene 始终存在 */}
+      {(state === 'totem' || state === 'detail') && data && (
         <>
-          {/* 3D 场景 (全屏背景) */}
+          {/* 3D 场景 (全屏背景) - 始终渲染以保持模型状态 */}
           <FullscreenScene modelUrl={data.modelUrl} />
 
-          {/* HUD 装饰层 */}
+          {/* HUD 装饰层 & 顶部导航 - 始终存在 */}
           <HudOverlay />
-
-          {/* UI 覆盖层 */}
-          <TransparentHeader date={data.date} />
-          <InsightPanel data={data} onExpand={openDetail} />
-          <SourcesPanel newsCount={data.news.length} onExpand={openDetail} />
-        </>
-      )}
-
-      {/* Detail 状态: 3D 场景 + 详情抽屉 */}
-      {state === 'detail' && data && (
-        <>
-          {/* 3D 场景 (全屏背景) */}
-          <FullscreenScene modelUrl={data.modelUrl} />
-
-          {/* HUD 装饰层 */}
-          <HudOverlay />
-
-          {/* UI 覆盖层 */}
           <TransparentHeader date={data.date} />
 
-          {/* 详情抽屉 */}
+          {/* Totem 独有 UI: 面板 */}
+          {state === 'totem' && (
+            <>
+              <InsightPanel data={data} onExpand={openDetail} />
+              <SourcesPanel newsCount={data.news.length} onExpand={openDetail} />
+            </>
+          )}
+
+          {/* Detail 独有 UI: 抽屉 */}
           <DetailSheet
-            isOpen={true}
+            isOpen={state === 'detail'}
             onClose={closeDetail}
             news={data.news}
             tripoPrompt={data.tripoPrompt}
