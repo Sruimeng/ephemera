@@ -18,10 +18,14 @@ export const LiveTimestamp: React.FC<{ className?: string }> = ({ className = ''
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const hours = now.getUTCHours().toString().padStart(2, '0');
-      const mins = now.getUTCMinutes().toString().padStart(2, '0');
-      const secs = now.getUTCSeconds().toString().padStart(2, '0');
-      const ms = now.getUTCMilliseconds().toString().padStart(3, '0');
+      // 转换为北京时间 (UTC+8)
+      // 原理: 获取当前UTC时间戳，加上8小时偏移量，然后读取UTC时间分量
+      const beijingTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+
+      const hours = beijingTime.getUTCHours().toString().padStart(2, '0');
+      const mins = beijingTime.getUTCMinutes().toString().padStart(2, '0');
+      const secs = beijingTime.getUTCSeconds().toString().padStart(2, '0');
+      const ms = beijingTime.getUTCMilliseconds().toString().padStart(3, '0');
       setTime(`${hours}:${mins}:${secs}.${ms}`);
     };
 
@@ -31,7 +35,7 @@ export const LiveTimestamp: React.FC<{ className?: string }> = ({ className = ''
   }, []);
 
   return (
-    <span className={`font-mono text-xs text-[#D4D4D4] tabular-nums ${className}`}>{time} UTC</span>
+    <span className={`font-mono text-xs text-[#D4D4D4] tabular-nums ${className}`}>{time} CN</span>
   );
 };
 

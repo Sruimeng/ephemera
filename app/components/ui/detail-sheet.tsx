@@ -109,7 +109,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
                 <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
               </div>
 
-              <ul className="space-y-3">
+              <ul className="list-none space-y-3">
                 {news.map((item, index) => (
                   <li key={index} className="hud-card p-4">
                     <div className="flex items-start gap-4">
