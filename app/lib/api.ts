@@ -75,15 +75,45 @@ export function normalizeData(raw: DailyWorldData): NormalizedDailyWorld {
 }
 
 /**
+ * 软 404 错误类型
+ * 用于区分真正的网络错误和 API 返回的 "数据不存在"
+ */
+export class NotFoundError extends Error {
+  code = 'not_found' as const;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
+
+/**
+ * 检查响应是否为软 404 (HTTP 200 但数据中包含 error)
+ */
+interface SoftErrorResponse {
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+/**
  * 获取今日 Daily World 数据
  *
- * @throws Error - API 请求失败或数据不存在
+ * @throws NotFoundError - 数据不存在 (软 404)
+ * @throws Error - API 请求失败
  * @returns 规范化后的 Daily World 数据
  *
  * @example
  * ```ts
- * const data = await getDailyWorld();
- * console.log(data.theme); // "The Duality of Connection"
+ * try {
+ *   const data = await getDailyWorld();
+ *   console.log(data.theme);
+ * } catch (err) {
+ *   if (err instanceof NotFoundError) {
+ *     // VOID 状态
+ *   }
+ * }
  * ```
  */
 export async function getDailyWorld(): Promise<NormalizedDailyWorld> {
@@ -95,14 +125,21 @@ export async function getDailyWorld(): Promise<NormalizedDailyWorld> {
 
   if (!response.ok) {
     if (response.status === 404) {
-      throw new Error('暂无数据，请等待系统生成');
+      throw new NotFoundError('暂无数据，请等待系统生成');
     }
     throw new Error(`API 请求失败: ${response.status}`);
   }
 
-  const json: ApiResponse = await response.json();
-  // 提取 data 字段
-  const raw: DailyWorldData = json.data;
+  const json = (await response.json()) as ApiResponse | SoftErrorResponse;
+
+  // 检查软 404 (HTTP 200 但数据中包含 error)
+  if ('error' in json && json.error?.code === 'not_found') {
+    throw new NotFoundError(json.error.message || '数据不存在');
+  }
+
+  // 正常响应
+  const apiResponse = json as ApiResponse;
+  const raw: DailyWorldData = apiResponse.data;
   return normalizeData(raw);
 }
 
@@ -110,12 +147,19 @@ export async function getDailyWorld(): Promise<NormalizedDailyWorld> {
  * 按日期获取 Daily World 数据
  *
  * @param date - 日期字符串，格式: "YYYY-MM-DD"
- * @throws Error - API 请求失败或数据不存在
+ * @throws NotFoundError - 该日期数据不存在 (软 404)
+ * @throws Error - API 请求失败
  * @returns 规范化后的 Daily World 数据
  *
  * @example
  * ```ts
- * const data = await getDailyWorldByDate('2026-01-06');
+ * try {
+ *   const data = await getDailyWorldByDate('2026-01-06');
+ * } catch (err) {
+ *   if (err instanceof NotFoundError) {
+ *     // VOID 状态 - 该日期无数据
+ *   }
+ * }
  * ```
  */
 export async function getDailyWorldByDate(date: string): Promise<NormalizedDailyWorld> {
@@ -127,7 +171,7 @@ export async function getDailyWorldByDate(date: string): Promise<NormalizedDaily
 
   if (!response.ok) {
     if (response.status === 404) {
-      throw new Error('该日期暂无数据');
+      throw new NotFoundError('该日期暂无数据');
     }
     if (response.status === 400) {
       throw new Error('日期格式无效，请使用 YYYY-MM-DD 格式');
@@ -135,9 +179,16 @@ export async function getDailyWorldByDate(date: string): Promise<NormalizedDaily
     throw new Error(`API 请求失败: ${response.status}`);
   }
 
-  const json: ApiResponse = await response.json();
-  // 提取 data 字段
-  const raw: DailyWorldData = json.data;
+  const json = (await response.json()) as ApiResponse | SoftErrorResponse;
+
+  // 检查软 404 (HTTP 200 但数据中包含 error)
+  if ('error' in json && json.error?.code === 'not_found') {
+    throw new NotFoundError(json.error.message || '该日期数据不存在');
+  }
+
+  // 正常响应
+  const apiResponse = json as ApiResponse;
+  const raw: DailyWorldData = apiResponse.data;
   return normalizeData(raw);
 }
 

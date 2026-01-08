@@ -2,7 +2,7 @@
  * HUD InsightPanel 组件
  * Ephemera V2: Deep Space Terminal
  * 左下角布局，衬线体标题 + 等宽体数据
- * @see llmdoc/guides/ephemera-prd.md
+ * @see PRD V1.1 Section 3.4
  */
 
 import type React from 'react';
@@ -62,6 +62,57 @@ export const InsightPanel: React.FC<InsightPanelProps> = ({ data, onExpand, clas
         <span>View Sources</span>
         <span className="text-[#A3A3A3]">[{data.news.length}]</span>
       </button>
+    </div>
+  );
+};
+
+/**
+ * VOID 状态信息面板
+ * 当 API 返回 not_found 时显示
+ * @see PRD V1.1 Section 3.4 - Void 状态
+ */
+export const VoidInsightPanel: React.FC<{
+  /** 错误信息 */
+  error?: Error | null;
+  /** 当前日期 */
+  dateStr?: string;
+  /** 自定义类名 */
+  className?: string;
+}> = ({ error, dateStr, className = '' }) => {
+  return (
+    <div
+      className={`
+        fixed bottom-0 left-0 z-40
+        max-w-lg
+        p-6
+        safe-area-pb
+        ${className}
+      `}
+    >
+      {/* 错误标签 */}
+      <div className="mb-3 flex items-center gap-3">
+        <span className="animate-pulse text-[10px] text-[#EF4444] tracking-[0.2em] font-mono uppercase">
+          Signal.Lost
+        </span>
+        <div className="h-px flex-1 from-[#EF4444]/30 to-transparent bg-gradient-to-r" />
+      </div>
+
+      {/* 错误标题 - 等宽字体红色 */}
+      <h2 className="mb-4 text-lg text-[#EF4444] font-bold tracking-tight font-mono">
+        ERROR: 404_TIMELINE_MISSING
+      </h2>
+
+      {/* 错误描述 */}
+      <p className="mb-4 text-sm text-[#A3A3A3] leading-relaxed font-mono">
+        No artifacts recovered from this coordinate.
+      </p>
+
+      {/* 技术细节 */}
+      <div className="text-xs text-[#525252] font-mono space-y-1">
+        {dateStr && <p>Target: {dateStr}</p>}
+        {error && <p>Reason: {error.message}</p>}
+        <p>Status: DATA_UNAVAILABLE</p>
+      </div>
     </div>
   );
 };

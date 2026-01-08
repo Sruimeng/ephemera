@@ -1,103 +1,182 @@
 'use client';
 
 /**
- * Ephemera V2 首页
- * Digital Art Gallery - Deep Space Terminal
- * @see llmdoc/guides/ephemera-prd.md
+ * Ephemera V1.1 首页
+ * Digital Art Gallery - Time Walker
+ * @see PRD V1.1
  */
 
-import { useEffect } from 'react';
-import { FullscreenScene } from '~/components/canvas/scene';
+import { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
+import { FullscreenScene, FullscreenVoidScene } from '~/components/canvas/scene';
+import { DateNavigation } from '~/components/ui/date-navigation';
 import { DetailSheet } from '~/components/ui/detail-sheet';
-import { TransparentHeader } from '~/components/ui/header';
 import { HudOverlay } from '~/components/ui/hud-decorations';
-import { InsightPanel, SourcesPanel } from '~/components/ui/insight-panel';
+import { InsightPanel, SourcesPanel, VoidInsightPanel } from '~/components/ui/insight-panel';
 import { LoadingScreen } from '~/components/ui/loading-screen';
-import { useDailyWorld } from '~/hooks/use-daily-world';
+import { useDailyWorldStateMachine } from '~/hooks/use-daily-world';
+import { useDateNavigationKeys, useEscapeKey } from '~/hooks/use-keyboard';
 import { useAppStore } from '~/store/use-app-store';
 
 /**
- * 错误视图组件 - HUD 风格
+ * 格式化日期为 YYYY-MM-DD
  */
-function ErrorView({ error }: { error: Error | null }) {
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * HUD Header with DateNavigation
+ * 整合日期导航的顶部 HUD
+ */
+function TimeHudHeader({
+  date,
+  isToday,
+  isLoading,
+  onPrev,
+  onNext,
+}: {
+  date: Date;
+  isToday: boolean;
+  isLoading: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] px-6">
-      <div className="max-w-md text-center">
-        {/* 错误图标 */}
-        <div className="mb-6 text-4xl text-[#EF4444] font-mono">[!]</div>
-
-        {/* 错误标题 */}
-        <h1 className="mb-3 text-lg text-[#E5E5E5] tracking-wider font-mono uppercase">
-          System.Error
-        </h1>
-
-        {/* 错误信息 */}
-        <p className="mb-6 text-sm text-[#525252] font-mono">
-          {error?.message || '发生未知错误，请稍后重试'}
-        </p>
-
-        {/* 重试按钮 */}
-        <button onClick={() => window.location.reload()} className="btn-hud">
-          Retry Connection
-        </button>
+    <header className="fixed left-0 right-0 top-0 z-50 safe-area-pt">
+      {/* 中央日期导航 */}
+      <div className="flex items-center justify-center py-4">
+        <DateNavigation
+          date={date}
+          isToday={isToday}
+          isLoading={isLoading}
+          onPrev={onPrev}
+          onNext={onNext}
+        />
       </div>
-    </div>
+
+      {/* 角落装饰 */}
+      <div className="absolute left-6 top-4 flex items-center gap-2">
+        <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
+          EPHEMERA.V1.1
+        </span>
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
+      </div>
+
+      <div className="absolute right-6 top-4 flex items-center gap-2">
+        <span className="text-[10px] text-[#A3A3A3] font-mono">SYS.NOMINAL</span>
+      </div>
+    </header>
   );
 }
 
 /**
  * 首页组件
  *
- * 状态机:
- * [IDLE] → [LOADING] → [TOTEM] ↔ [DETAIL]
- *              ↓
- *           [ERROR]
+ * V1.1 状态机:
+ * [LOADING] → [SUCCESS/TOTEM] ↔ [DETAIL]
+ *         ↘ [VOID]
+ *
+ * 新功能:
+ * - 时间漫游: 左右方向键/按钮切换日期 (通过 URL 导航)
+ * - Void 状态: API 无数据时显示线框球
+ * - 后处理: Bloom + Noise + Vignette
  */
 export default function Index() {
-  const { data, loading, error } = useDailyWorld();
-  const { state, setState, setData, setError, openDetail, closeDetail } = useAppStore();
+  const navigate = useNavigate();
+
+  // 使用新的状态机 Hook
+  const { date, dateStr, data, status, error, isToday, actions } = useDailyWorldStateMachine();
+
+  // Store 状态 (用于 Detail 面板)
+  const { state, openDetail, closeDetail, setState, setData, setVoid } = useAppStore();
+
+  // 派生状态
+  const isLoading = status === 'LOADING';
+  const isVoid = status === 'VOID';
+  const isSuccess = status === 'SUCCESS';
+
+  // Detail 状态
+  const isDetailOpen = state === 'detail';
 
   // 同步 Hook 状态到 Store
   useEffect(() => {
-    if (loading) {
+    if (isLoading) {
       setState('loading');
-    } else if (error) {
-      setError(error);
-    } else if (data) {
+    } else if (isVoid && error) {
+      setVoid(error);
+    } else if (isSuccess && data) {
       setData(data);
     }
-  }, [loading, error, data, setState, setError, setData]);
+  }, [isLoading, isVoid, isSuccess, data, error, setState, setVoid, setData]);
 
-  // 根据状态渲染不同视图
+  // 导航到前一天 (通过 URL)
+  const goToPrev = () => {
+    const prevDate = new Date(date);
+    prevDate.setDate(prevDate.getDate() - 1);
+    navigate(`/${formatDate(prevDate)}`);
+  };
+
+  // 后一天保持内部状态 (因为首页始终显示今天)
+  const goToNext = actions.next;
+
+  // 键盘快捷键
+  useDateNavigationKeys(goToPrev, goToNext, !isDetailOpen);
+  useEscapeKey(closeDetail, isDetailOpen);
+
+  // 计算显示状态
+  const showContent = useMemo(() => {
+    // 只在有数据时显示内容面板
+    return isSuccess && data;
+  }, [isSuccess, data]);
+
+  // 根据状态渲染
   return (
     <main className="hud-vignette min-h-screen">
+      {/* 顶部时间 HUD - 始终显示 */}
+      <TimeHudHeader
+        date={date}
+        isToday={isToday}
+        isLoading={isLoading}
+        onPrev={goToPrev}
+        onNext={goToNext}
+      />
+
       {/* 加载状态 */}
-      {state === 'loading' && <LoadingScreen />}
+      {isLoading && <LoadingScreen />}
 
-      {/* 错误状态 */}
-      {state === 'error' && <ErrorView error={error} />}
-
-      {/* 正常状态 (Totem/Detail) - 保持 Scene 始终存在 */}
-      {(state === 'totem' || state === 'detail') && data && (
+      {/* VOID 状态 - 无数据 */}
+      {isVoid && (
         <>
-          {/* 3D 场景 (全屏背景) - 始终渲染以保持模型状态 */}
+          <FullscreenVoidScene />
+          <HudOverlay />
+          <VoidInsightPanel error={error} dateStr={dateStr} />
+        </>
+      )}
+
+      {/* SUCCESS 状态 - 有数据 */}
+      {showContent && data && (
+        <>
+          {/* 3D 场景 (全屏背景) */}
           <FullscreenScene modelUrl={data.modelUrl} />
 
-          {/* HUD 装饰层 & 顶部导航 - 始终存在 */}
+          {/* HUD 装饰层 */}
           <HudOverlay />
-          <TransparentHeader date={data.date} />
 
           {/* Totem 独有 UI: 面板 */}
-          {state === 'totem' && (
+          {!isDetailOpen && (
             <>
               <InsightPanel data={data} onExpand={openDetail} />
               <SourcesPanel newsCount={data.news.length} onExpand={openDetail} />
             </>
           )}
 
-          {/* Detail 独有 UI: 抽屉 */}
+          {/* Detail 抽屉 */}
           <DetailSheet
-            isOpen={state === 'detail'}
+            isOpen={isDetailOpen}
             onClose={closeDetail}
             news={data.news}
             tripoPrompt={data.tripoPrompt}
@@ -113,8 +192,11 @@ export default function Index() {
  */
 export function meta() {
   return [
-    { title: 'Ephemera | Digital Art Gallery' },
-    { name: 'description', content: "Daily AI-generated 3D art reflecting the world's zeitgeist" },
+    { title: 'Ephemera | Time Walker' },
+    {
+      name: 'description',
+      content: "Daily AI-generated 3D art reflecting the world's zeitgeist - Now with time travel",
+    },
     { name: 'theme-color', content: '#050505' },
   ];
 }

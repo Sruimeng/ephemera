@@ -1,11 +1,32 @@
 /**
  * 应用状态管理 Store
  * 使用 Zustand 管理应用全局状态
- * @see llmdoc/agent/strategy-ephemera-v3.md
+ * @see PRD V1.1 Section 2.3
  */
 
 import { create } from 'zustand';
 import type { AppStore } from '~/types/store';
+
+/**
+ * 判断是否为今天 (本地时区)
+ */
+function checkIsToday(date: Date): boolean {
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+}
+
+/**
+ * 添加/减少天数
+ */
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
 
 /**
  * 应用状态 Store
@@ -14,32 +35,34 @@ import type { AppStore } from '~/types/store';
  * IDLE -> LOADING -> TOTEM <-> DETAIL
  *              |
  *              v
- *           ERROR
+ *           VOID (无数据)
  *
  * @example
  * ```tsx
  * function App() {
- *   const { state, data, setState, setData } = useAppStore();
+ *   const { state, data, setState, setData, currentDate, goToPrevDay } = useAppStore();
  *
  *   useEffect(() => {
  *     setState('loading');
- *     fetchData().then(setData).catch(setError);
- *   }, []);
+ *     fetchData().then(setData).catch(setVoid);
+ *   }, [currentDate]);
  *
  *   switch (state) {
  *     case 'loading': return <LoadingScreen />;
  *     case 'totem': return <TotemView data={data} />;
  *     case 'detail': return <DetailView data={data} />;
- *     case 'error': return <ErrorView />;
+ *     case 'void': return <VoidView />;
  *   }
  * }
  * ```
  */
-export const useAppStore = create<AppStore>((set) => ({
+export const useAppStore = create<AppStore>((set, get) => ({
   // ========== Initial State ==========
   state: 'idle',
   data: null,
   error: null,
+  currentDate: new Date(),
+  isToday: true,
 
   // ========== Actions ==========
 
@@ -59,12 +82,24 @@ export const useAppStore = create<AppStore>((set) => ({
     }),
 
   /**
-   * 设置错误并自动切换到 error 状态
+   * 设置错误并自动切换到 void 状态
+   * @deprecated 使用 setVoid 替代
    */
   setError: (newError) =>
     set({
       error: newError,
-      state: 'error',
+      state: 'void',
+      data: null,
+    }),
+
+  /**
+   * 设置 Void 状态 (无数据)
+   */
+  setVoid: (newError) =>
+    set({
+      error: newError,
+      state: 'void',
+      data: null,
     }),
 
   /**
@@ -75,6 +110,8 @@ export const useAppStore = create<AppStore>((set) => ({
       state: 'idle',
       data: null,
       error: null,
+      currentDate: new Date(),
+      isToday: true,
     }),
 
   /**
@@ -92,6 +129,55 @@ export const useAppStore = create<AppStore>((set) => ({
     set((currentState: AppStore) => ({
       state: currentState.state === 'detail' ? 'totem' : currentState.state,
     })),
+
+  /**
+   * 设置当前日期
+   */
+  setCurrentDate: (date) =>
+    set({
+      currentDate: date,
+      isToday: checkIsToday(date),
+      state: 'loading',
+    }),
+
+  /**
+   * 前一天
+   */
+  goToPrevDay: () => {
+    const { currentDate } = get();
+    const prevDate = addDays(currentDate, -1);
+    set({
+      currentDate: prevDate,
+      isToday: false, // 回退肯定不是今天
+      state: 'loading',
+    });
+  },
+
+  /**
+   * 后一天
+   */
+  goToNextDay: () => {
+    const { currentDate, isToday } = get();
+    // 如果已经是今天，不能再往后
+    if (isToday) return;
+
+    const nextDate = addDays(currentDate, 1);
+    set({
+      currentDate: nextDate,
+      isToday: checkIsToday(nextDate),
+      state: 'loading',
+    });
+  },
+
+  /**
+   * 跳转到今天
+   */
+  goToToday: () =>
+    set({
+      currentDate: new Date(),
+      isToday: true,
+      state: 'loading',
+    }),
 }));
 
 /**
@@ -105,6 +191,12 @@ export const selectIsLoading = (state: AppStore) => state.state === 'loading';
 export const selectIsDetailOpen = (state: AppStore) => state.state === 'detail';
 
 /**
- * 选择器: 获取当前是否有错误
+ * 选择器: 获取当前是否为 Void 状态
  */
-export const selectHasError = (state: AppStore) => state.state === 'error';
+export const selectIsVoid = (state: AppStore) => state.state === 'void';
+
+/**
+ * 选择器: 获取当前是否有错误 (兼容)
+ * @deprecated 使用 selectIsVoid 替代
+ */
+export const selectHasError = (state: AppStore) => state.state === 'void';
