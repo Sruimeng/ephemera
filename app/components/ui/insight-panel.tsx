@@ -6,6 +6,7 @@
  */
 
 import type React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { NormalizedDailyWorld } from '~/types/api';
 
 interface InsightPanelProps {
@@ -22,7 +23,8 @@ interface InsightPanelProps {
  * 左下角布局，解构式设计
  */
 export const InsightPanel: React.FC<InsightPanelProps> = ({ data, onExpand, className = '' }) => {
-  const title = data.theme || "Today's Reflection";
+  const { t } = useTranslation('common');
+  const title = data.theme || t('insight.todayReflection');
   const body = data.summary;
 
   return (
@@ -38,7 +40,7 @@ export const InsightPanel: React.FC<InsightPanelProps> = ({ data, onExpand, clas
       {/* 数据标签 */}
       <div className="mb-3 flex items-center gap-3">
         <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
-          Object.Description
+          {t('insight.objectDescription')}
         </span>
         <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
       </div>
@@ -59,7 +61,7 @@ export const InsightPanel: React.FC<InsightPanelProps> = ({ data, onExpand, clas
         <span className="h-3 w-3 flex items-center justify-center border border-current rounded-sm">
           <span className="i-lucide-plus h-2 w-2" />
         </span>
-        <span>View Sources</span>
+        <span>{t('insight.viewSources')}</span>
         <span className="text-[#A3A3A3]">[{data.news.length}]</span>
       </button>
     </div>
@@ -79,6 +81,8 @@ export const VoidInsightPanel: React.FC<{
   /** 自定义类名 */
   className?: string;
 }> = ({ error, dateStr, className = '' }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div
       className={`
@@ -92,26 +96,34 @@ export const VoidInsightPanel: React.FC<{
       {/* 错误标签 */}
       <div className="mb-3 flex items-center gap-3">
         <span className="animate-pulse text-[10px] text-[#EF4444] tracking-[0.2em] font-mono uppercase">
-          Signal.Lost
+          {t('void.signalLost')}
         </span>
         <div className="h-px flex-1 from-[#EF4444]/30 to-transparent bg-gradient-to-r" />
       </div>
 
       {/* 错误标题 - 等宽字体红色 */}
       <h2 className="mb-4 text-lg text-[#EF4444] font-bold tracking-tight font-mono">
-        ERROR: 404_TIMELINE_MISSING
+        {t('void.errorTitle')}
       </h2>
 
       {/* 错误描述 */}
       <p className="mb-4 text-sm text-[#A3A3A3] leading-relaxed font-mono">
-        No artifacts recovered from this coordinate.
+        {t('void.noArtifacts')}
       </p>
 
       {/* 技术细节 */}
       <div className="text-xs text-[#525252] font-mono space-y-1">
-        {dateStr && <p>Target: {dateStr}</p>}
-        {error && <p>Reason: {error.message}</p>}
-        <p>Status: DATA_UNAVAILABLE</p>
+        {dateStr && (
+          <p>
+            {t('void.target')}: {dateStr}
+          </p>
+        )}
+        {error && (
+          <p>
+            {t('void.reason')}: {error.message}
+          </p>
+        )}
+        <p>{t('void.status')}</p>
       </div>
     </div>
   );
@@ -126,6 +138,8 @@ export const SourcesPanel: React.FC<{
   onExpand: () => void;
   className?: string;
 }> = ({ newsCount, onExpand, className = '' }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div
       className={`
@@ -140,7 +154,7 @@ export const SourcesPanel: React.FC<{
         className="group flex flex-col items-end gap-1 transition-all hover:translate-x-[-4px]"
       >
         <span className="text-[10px] text-[#A3A3A3] tracking-[0.15em] font-mono uppercase">
-          Sources
+          {t('insight.sources')}
         </span>
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
@@ -164,7 +178,8 @@ export const CompactInsightPanel: React.FC<InsightPanelProps> = ({
   onExpand,
   className = '',
 }) => {
-  const title = data.theme || "Today's Reflection";
+  const { t } = useTranslation('common');
+  const title = data.theme || t('insight.todayReflection');
 
   return (
     <div
@@ -180,7 +195,7 @@ export const CompactInsightPanel: React.FC<InsightPanelProps> = ({
       >
         <div className="min-w-0 flex-1">
           <span className="mb-1 block text-[10px] text-[#A3A3A3] tracking-[0.15em] font-mono uppercase">
-            Object.Description
+            {t('insight.objectDescription')}
           </span>
           <h2 className="truncate text-base text-[#F5F5F5] font-medium font-serif">{title}</h2>
         </div>

@@ -18,7 +18,7 @@ export const Lngs = [
 
 export const I18nConfig = {
   supportedLngs: Lngs.map((item) => item.code),
-  fallbackLng: 'en',
+  fallbackLng: 'zh',
   defaultNS: 'common',
 };
 

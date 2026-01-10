@@ -12,7 +12,12 @@
   "navigation": {
     "home": "Inicio",
     "about": "Acerca de",
-    "language": "Idioma"
+    "language": "Idioma",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "today": "Hoy",
+    "prevDay": "Día anterior",
+    "nextDay": "Día siguiente"
   },
   "common": {
     "submit": "Enviar",
@@ -22,6 +27,49 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "loading": "Cargando...",
-    "welcome": "¡Bienvenido!"
+    "welcome": "¡Bienvenido!",
+    "backHome": "Volver al inicio",
+    "close": "Cerrar"
+  },
+  "error": {
+    "unknown": "Error desconocido",
+    "invalidDate": "Formato de fecha inválido",
+    "appError": "Error de aplicación"
+  },
+  "header": {
+    "dailyZeitgeist": "Zeitgeist Diario",
+    "sysNominal": "SISTEMA NOMINAL"
+  },
+  "loading": {
+    "title": "EPHEMERA",
+    "subtitle": "GALERÍA DE ARTE DIGITAL",
+    "bootInit": "[SYS] Inicializando Ephemera V2...",
+    "bootConnect": "[NET] Conectando a api.sruim.xin...",
+    "bootFetch": "[DAT] Obteniendo zeitgeist diario...",
+    "bootModel": "[3D] Cargando modelo GLB...",
+    "bootPost": "[GFX] Preparando post-procesamiento...",
+    "bootReady": "[RDY] Sistema listo.",
+    "constructing": "Construyendo el Zeitgeist...",
+    "footer": "ARTE 3D GENERADO POR IA QUE REFLEJA EL ESPÍRITU DEL MUNDO"
+  },
+  "detail": {
+    "dataSources": "Fuentes de Datos",
+    "inputNews": "Noticias de Entrada",
+    "outputPrompt": "Prompt de Salida",
+    "tripoNote": "Generado vía Tripo.AI → Modelo GLB"
+  },
+  "insight": {
+    "objectDescription": "Descripción del Objeto",
+    "todayReflection": "Reflexión de Hoy",
+    "viewSources": "Ver Fuentes",
+    "sources": "Fuentes"
+  },
+  "void": {
+    "signalLost": "Señal Perdida",
+    "errorTitle": "ERROR: 404_LÍNEA_TEMPORAL_FALTANTE",
+    "noArtifacts": "No se recuperaron artefactos de esta coordenada.",
+    "target": "Objetivo",
+    "reason": "Razón",
+    "status": "Estado: DATOS_NO_DISPONIBLES"
   }
 }

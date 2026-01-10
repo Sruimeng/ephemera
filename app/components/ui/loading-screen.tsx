@@ -6,19 +6,20 @@
  */
 
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 终端启动日志
  */
-const bootSequence = [
-  '[SYS] Initializing Ephemera V2...',
-  '[NET] Connecting to api.sruim.xin...',
-  '[DAT] Fetching daily zeitgeist...',
-  '[3D] Loading GLB model...',
-  '[GFX] Preparing post-processing...',
-  '[RDY] System ready.',
-];
+const bootSequenceKeys = [
+  'loading.bootInit',
+  'loading.bootConnect',
+  'loading.bootFetch',
+  'loading.bootModel',
+  'loading.bootPost',
+  'loading.bootReady',
+] as const;
 
 interface LoadingScreenProps {
   /** 加载进度 (0-100) */
@@ -37,8 +38,12 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   message,
   className = '',
 }) => {
+  const { t } = useTranslation('common');
   const [logs, setLogs] = useState<string[]>([]);
   const [currentLogIndex, setCurrentLogIndex] = useState(0);
+
+  // 获取翻译后的启动序列
+  const bootSequence = useMemo(() => bootSequenceKeys.map((key) => t(key)), [t]);
 
   // 模拟终端日志输出
   useEffect(() => {
@@ -52,7 +57,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       );
       return () => clearTimeout(timer);
     }
-  }, [currentLogIndex]);
+  }, [currentLogIndex, bootSequence]);
 
   // 随机数据装饰
   const [hexData, setHexData] = useState('0x00000000');
@@ -86,9 +91,11 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <div className="max-w-md w-full px-6">
         {/* Logo - 简约文字版 */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl text-[#3B82F6] tracking-[0.3em] font-mono text-glow">EPHEMERA</h1>
+          <h1 className="text-2xl text-[#3B82F6] tracking-[0.3em] font-mono text-glow">
+            {t('loading.title')}
+          </h1>
           <p className="mt-2 text-[10px] text-[#707070] tracking-[0.2em] font-mono">
-            DIGITAL ART GALLERY
+            {t('loading.subtitle')}
           </p>
         </div>
 
@@ -98,7 +105,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <div
               key={i}
               className={`
-                ${log.includes('[RDY]') ? 'text-[#22C55E]' : 'text-[#808080]'}
+                ${log.includes('[RDY]') || log.includes('[就绪]') ? 'text-[#22C55E]' : 'text-[#808080]'}
                 animate-fade-in
               `}
             >
@@ -125,7 +132,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
           {/* 进度数值 */}
           <div className="mt-3 flex justify-between text-[10px] font-mono">
-            <span className="text-[#707070]">{message || 'Constructing the Zeitgeist...'}</span>
+            <span className="text-[#707070]">{message || t('loading.constructing')}</span>
             {progress !== undefined && (
               <span className="text-[#3B82F6] tabular-nums">{Math.round(progress)}%</span>
             )}
@@ -136,7 +143,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       {/* 底部装饰 */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
         <span className="text-[10px] text-[#505050] font-mono">
-          {"// AI-GENERATED 3D ART REFLECTING THE WORLD'S SPIRIT"}
+          {'// '}
+          {t('loading.footer')}
         </span>
       </div>
     </div>

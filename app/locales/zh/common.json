@@ -12,7 +12,12 @@
   "navigation": {
     "home": "首页",
     "about": "关于",
-    "language": "语言"
+    "language": "语言",
+    "prev": "上一天",
+    "next": "下一天",
+    "today": "今天",
+    "prevDay": "前一天",
+    "nextDay": "后一天"
   },
   "common": {
     "submit": "提交",
@@ -22,6 +27,49 @@
     "delete": "删除",
     "edit": "编辑",
     "loading": "加载中...",
-    "welcome": "欢迎使用！"
+    "welcome": "欢迎使用！",
+    "backHome": "返回首页",
+    "close": "关闭"
+  },
+  "error": {
+    "unknown": "未知错误",
+    "invalidDate": "无效的日期格式",
+    "appError": "应用程序错误"
+  },
+  "header": {
+    "dailyZeitgeist": "每日时代精神",
+    "sysNominal": "系统正常"
+  },
+  "loading": {
+    "title": "EPHEMERA",
+    "subtitle": "数字艺术画廊",
+    "bootInit": "[系统] 正在初始化 Ephemera V2...",
+    "bootConnect": "[网络] 正在连接 api.sruim.xin...",
+    "bootFetch": "[数据] 正在获取每日时代精神...",
+    "bootModel": "[3D] 正在加载 GLB 模型...",
+    "bootPost": "[图形] 正在准备后处理...",
+    "bootReady": "[就绪] 系统准备完毕。",
+    "constructing": "正在构建时代精神...",
+    "footer": "AI 生成的 3D 艺术，映射世界精神"
+  },
+  "detail": {
+    "dataSources": "数据源",
+    "inputNews": "输入新闻",
+    "outputPrompt": "输出提示词",
+    "tripoNote": "通过 Tripo.AI 生成 → GLB 模型"
+  },
+  "insight": {
+    "objectDescription": "对象描述",
+    "todayReflection": "今日感悟",
+    "viewSources": "查看来源",
+    "sources": "来源"
+  },
+  "void": {
+    "signalLost": "信号丢失",
+    "errorTitle": "错误: 404_时间线缺失",
+    "noArtifacts": "此坐标未发现任何遗迹。",
+    "target": "目标",
+    "reason": "原因",
+    "status": "状态: 数据不可用"
   }
 }

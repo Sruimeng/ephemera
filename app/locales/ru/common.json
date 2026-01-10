@@ -12,7 +12,12 @@
   "navigation": {
     "home": "Главная",
     "about": "О нас",
-    "language": "Язык"
+    "language": "Язык",
+    "prev": "Назад",
+    "next": "Вперёд",
+    "today": "Сегодня",
+    "prevDay": "Предыдущий день",
+    "nextDay": "Следующий день"
   },
   "common": {
     "submit": "Отправить",
@@ -22,6 +27,49 @@
     "delete": "Удалить",
     "edit": "Редактировать",
     "loading": "Загрузка...",
-    "welcome": "Добро пожаловать!"
+    "welcome": "Добро пожаловать!",
+    "backHome": "Вернуться на главную",
+    "close": "Закрыть"
+  },
+  "error": {
+    "unknown": "Неизвестная ошибка",
+    "invalidDate": "Неверный формат даты",
+    "appError": "Ошибка приложения"
+  },
+  "header": {
+    "dailyZeitgeist": "Ежедневный Дух Времени",
+    "sysNominal": "СИСТЕМА В НОРМЕ"
+  },
+  "loading": {
+    "title": "EPHEMERA",
+    "subtitle": "ЦИФРОВАЯ АРТ-ГАЛЕРЕЯ",
+    "bootInit": "[SYS] Инициализация Ephemera V2...",
+    "bootConnect": "[NET] Подключение к api.sruim.xin...",
+    "bootFetch": "[DAT] Получение ежедневного духа времени...",
+    "bootModel": "[3D] Загрузка GLB модели...",
+    "bootPost": "[GFX] Подготовка постобработки...",
+    "bootReady": "[RDY] Система готова.",
+    "constructing": "Построение Духа Времени...",
+    "footer": "3D-ИСКУССТВО, СОЗДАННОЕ ИИ, ОТРАЖАЮЩЕЕ ДУХ МИРА"
+  },
+  "detail": {
+    "dataSources": "Источники Данных",
+    "inputNews": "Входные Новости",
+    "outputPrompt": "Выходной Промпт",
+    "tripoNote": "Создано через Tripo.AI → GLB Модель"
+  },
+  "insight": {
+    "objectDescription": "Описание Объекта",
+    "todayReflection": "Размышление Дня",
+    "viewSources": "Просмотр Источников",
+    "sources": "Источники"
+  },
+  "void": {
+    "signalLost": "Сигнал Потерян",
+    "errorTitle": "ОШИБКА: 404_ВРЕМЕННАЯ_ЛИНИЯ_ОТСУТСТВУЕТ",
+    "noArtifacts": "Артефакты не обнаружены по этим координатам.",
+    "target": "Цель",
+    "reason": "Причина",
+    "status": "Статус: ДАННЫЕ_НЕДОСТУПНЫ"
   }
 }

@@ -6,6 +6,7 @@
 
 import type React from 'react';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { NewsItem } from '~/types/api';
 
 interface DetailSheetProps {
@@ -32,6 +33,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
   tripoPrompt,
   className = '',
 }) => {
+  const { t } = useTranslation('common');
   const sheetRef = useRef<HTMLDivElement>(null);
 
   // ESC 键关闭
@@ -83,7 +85,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
           <div className="flex items-center justify-between border-b border-white/5 px-6 pb-4">
             <div className="flex items-center gap-4">
               <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
-                Data.Sources
+                {t('detail.dataSources')}
               </span>
               <span className="text-xs text-[#3B82F6] font-mono">[{news.length}]</span>
             </div>
@@ -93,7 +95,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
               className="flex items-center gap-2 border border-white/10 rounded-sm px-3 py-1.5 text-[10px] text-[#808080] tracking-wider font-mono uppercase transition-all active:scale-95 hover:border-white/20 hover:text-[#A0A0A0]"
             >
               <span className="i-lucide-x h-3 w-3" />
-              <span>Close</span>
+              <span>{t('common.close')}</span>
               <span className="text-[#606060]">[ESC]</span>
             </button>
           </div>
@@ -104,7 +106,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
             <section className="mb-8">
               <div className="mb-4 flex items-center gap-3">
                 <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
-                  Input.News
+                  {t('detail.inputNews')}
                 </span>
                 <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
               </div>
@@ -136,7 +138,7 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
               <section>
                 <div className="mb-4 flex items-center gap-3">
                   <span className="text-[10px] text-[#707070] tracking-[0.2em] font-mono uppercase">
-                    Output.Prompt
+                    {t('detail.outputPrompt')}
                   </span>
                   <div className="h-px flex-1 from-white/10 to-transparent bg-gradient-to-r" />
                 </div>
@@ -148,7 +150,8 @@ export const DetailSheet: React.FC<DetailSheetProps> = ({
                 </div>
 
                 <p className="mt-3 text-[10px] text-[#707070] font-mono">
-                  {'// Generated via Tripo.AI → GLB Model'}
+                  {'// '}
+                  {t('detail.tripoNote')}
                 </p>
               </section>
             )}

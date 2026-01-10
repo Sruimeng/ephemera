@@ -5,6 +5,7 @@
  */
 
 import type React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DateNavigationProps {
   /** 当前日期 */
@@ -55,6 +56,7 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
   onNext,
   className = '',
 }) => {
+  const { t } = useTranslation('common');
   const displayDate = formatDateForDisplay(date);
   const compactDate = formatDateForDisplay(date, true);
 
@@ -70,10 +72,10 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
         onClick={onPrev}
         disabled={isLoading}
         className="group flex items-center gap-1.5 border border-white/10 rounded-sm px-3 py-1.5 text-xs text-[#A3A3A3] tracking-wider font-mono uppercase transition-all active:scale-95 disabled:cursor-not-allowed hover:border-[#3B82F6]/40 hover:bg-[#3B82F6]/5 hover:text-[#3B82F6] disabled:opacity-30"
-        aria-label="前一天"
+        aria-label={t('navigation.prevDay')}
       >
         <span className="i-lucide-chevron-left h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-        <span className="hidden sm:inline">Prev</span>
+        <span className="hidden sm:inline">{t('navigation.prev')}</span>
       </button>
 
       {/* 日期显示 */}
@@ -105,7 +107,7 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
         {/* 今天标识 */}
         {isToday && (
           <span className="mt-0.5 block text-[9px] text-[#3B82F6] tracking-widest font-mono uppercase">
-            Today
+            {t('navigation.today')}
           </span>
         )}
       </div>
@@ -115,9 +117,9 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
         onClick={onNext}
         disabled={isToday || isLoading}
         className="group flex items-center gap-1.5 border border-white/10 rounded-sm px-3 py-1.5 text-xs text-[#A3A3A3] tracking-wider font-mono uppercase transition-all active:scale-95 disabled:cursor-not-allowed hover:border-[#3B82F6]/40 hover:bg-[#3B82F6]/5 hover:text-[#3B82F6] disabled:opacity-30"
-        aria-label="后一天"
+        aria-label={t('navigation.nextDay')}
       >
-        <span className="hidden sm:inline">Next</span>
+        <span className="hidden sm:inline">{t('navigation.next')}</span>
         <span className="i-lucide-chevron-right h-3 w-3 transition-transform group-hover:translate-x-0.5" />
       </button>
     </nav>
@@ -135,6 +137,7 @@ export const CompactDateNavigation: React.FC<DateNavigationProps> = ({
   onNext,
   className = '',
 }) => {
+  const { t } = useTranslation('common');
   const compactDate = formatDateForDisplay(date, true);
 
   return (
@@ -149,7 +152,7 @@ export const CompactDateNavigation: React.FC<DateNavigationProps> = ({
         onClick={onPrev}
         disabled={isLoading}
         className="p-1.5 text-[#A3A3A3] transition-colors active:scale-90 disabled:cursor-not-allowed hover:text-[#3B82F6] disabled:opacity-30"
-        aria-label="前一天"
+        aria-label={t('navigation.prevDay')}
       >
         <span className="i-lucide-chevron-left h-4 w-4" />
       </button>
@@ -170,7 +173,7 @@ export const CompactDateNavigation: React.FC<DateNavigationProps> = ({
         onClick={onNext}
         disabled={isToday || isLoading}
         className="p-1.5 text-[#A3A3A3] transition-colors active:scale-90 disabled:cursor-not-allowed hover:text-[#3B82F6] disabled:opacity-30"
-        aria-label="后一天"
+        aria-label={t('navigation.nextDay')}
       >
         <span className="i-lucide-chevron-right h-4 w-4" />
       </button>

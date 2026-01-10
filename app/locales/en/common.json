@@ -12,7 +12,12 @@
   "navigation": {
     "home": "Home",
     "about": "About",
-    "language": "Language"
+    "language": "Language",
+    "prev": "Prev",
+    "next": "Next",
+    "today": "Today",
+    "prevDay": "Previous day",
+    "nextDay": "Next day"
   },
   "common": {
     "submit": "Submit",
@@ -22,6 +27,49 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "welcome": "Welcome to your new app!"
+    "welcome": "Welcome to your new app!",
+    "backHome": "Back to Home",
+    "close": "Close"
+  },
+  "error": {
+    "unknown": "Unknown error",
+    "invalidDate": "Invalid date format",
+    "appError": "Application Error"
+  },
+  "header": {
+    "dailyZeitgeist": "Daily Zeitgeist",
+    "sysNominal": "SYS.NOMINAL"
+  },
+  "loading": {
+    "title": "EPHEMERA",
+    "subtitle": "DIGITAL ART GALLERY",
+    "bootInit": "[SYS] Initializing Ephemera V2...",
+    "bootConnect": "[NET] Connecting to api.sruim.xin...",
+    "bootFetch": "[DAT] Fetching daily zeitgeist...",
+    "bootModel": "[3D] Loading GLB model...",
+    "bootPost": "[GFX] Preparing post-processing...",
+    "bootReady": "[RDY] System ready.",
+    "constructing": "Constructing the Zeitgeist...",
+    "footer": "AI-GENERATED 3D ART REFLECTING THE WORLD'S SPIRIT"
+  },
+  "detail": {
+    "dataSources": "Data.Sources",
+    "inputNews": "Input.News",
+    "outputPrompt": "Output.Prompt",
+    "tripoNote": "Generated via Tripo.AI → GLB Model"
+  },
+  "insight": {
+    "objectDescription": "Object.Description",
+    "todayReflection": "Today's Reflection",
+    "viewSources": "View Sources",
+    "sources": "Sources"
+  },
+  "void": {
+    "signalLost": "Signal.Lost",
+    "errorTitle": "ERROR: 404_TIMELINE_MISSING",
+    "noArtifacts": "No artifacts recovered from this coordinate.",
+    "target": "Target",
+    "reason": "Reason",
+    "status": "Status: DATA_UNAVAILABLE"
   }
 }

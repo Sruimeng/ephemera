@@ -12,7 +12,12 @@
   "navigation": {
     "home": "ホーム",
     "about": "について",
-    "language": "言語"
+    "language": "言語",
+    "prev": "前へ",
+    "next": "次へ",
+    "today": "今日",
+    "prevDay": "前日",
+    "nextDay": "翌日"
   },
   "common": {
     "submit": "送信",
@@ -22,6 +27,49 @@
     "delete": "削除",
     "edit": "編集",
     "loading": "読み込み中...",
-    "welcome": "ようこそ！"
+    "welcome": "ようこそ！",
+    "backHome": "ホームに戻る",
+    "close": "閉じる"
+  },
+  "error": {
+    "unknown": "不明なエラー",
+    "invalidDate": "無効な日付形式",
+    "appError": "アプリケーションエラー"
+  },
+  "header": {
+    "dailyZeitgeist": "デイリー・ツァイトガイスト",
+    "sysNominal": "システム正常"
+  },
+  "loading": {
+    "title": "EPHEMERA",
+    "subtitle": "デジタルアートギャラリー",
+    "bootInit": "[SYS] Ephemera V2を初期化中...",
+    "bootConnect": "[NET] api.sruim.xinに接続中...",
+    "bootFetch": "[DAT] デイリーツァイトガイストを取得中...",
+    "bootModel": "[3D] GLBモデルを読み込み中...",
+    "bootPost": "[GFX] ポストプロセスを準備中...",
+    "bootReady": "[RDY] システム準備完了。",
+    "constructing": "ツァイトガイストを構築中...",
+    "footer": "世界の精神を映すAI生成3Dアート"
+  },
+  "detail": {
+    "dataSources": "データソース",
+    "inputNews": "入力ニュース",
+    "outputPrompt": "出力プロンプト",
+    "tripoNote": "Tripo.AI経由で生成 → GLBモデル"
+  },
+  "insight": {
+    "objectDescription": "オブジェクト説明",
+    "todayReflection": "今日の省察",
+    "viewSources": "ソースを見る",
+    "sources": "ソース"
+  },
+  "void": {
+    "signalLost": "信号喪失",
+    "errorTitle": "エラー: 404_タイムライン欠落",
+    "noArtifacts": "この座標からアーティファクトは回収されませんでした。",
+    "target": "ターゲット",
+    "reason": "理由",
+    "status": "ステータス: データ利用不可"
   }
 }

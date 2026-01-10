@@ -13,6 +13,7 @@ import { DateNavigation } from '~/components/ui/date-navigation';
 import { DetailSheet } from '~/components/ui/detail-sheet';
 import { HudOverlay } from '~/components/ui/hud-decorations';
 import { InsightPanel, SourcesPanel, VoidInsightPanel } from '~/components/ui/insight-panel';
+import { LanguageSwitcher } from '~/components/ui/language-switcher';
 import { LoadingScreen } from '~/components/ui/loading-screen';
 import { useDailyWorldStateMachine } from '~/hooks/use-daily-world';
 import { useDateNavigationKeys, useEscapeKey } from '~/hooks/use-keyboard';
@@ -47,6 +48,21 @@ function TimeHudHeader({
 }) {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 safe-area-pt">
+      {/* 第一行：左右角落装饰 (桌面端) */}
+      <div className="absolute left-6 top-4 hidden sm:block">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
+            EPHEMERA.V1.1
+          </span>
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
+        </div>
+      </div>
+
+      <div className="absolute right-6 top-4 hidden items-center gap-4 sm:flex">
+        <LanguageSwitcher />
+        <span className="text-[10px] text-[#A3A3A3] font-mono">SYS.NOMINAL</span>
+      </div>
+
       {/* 中央日期导航 */}
       <div className="flex items-center justify-center py-4">
         <DateNavigation
@@ -58,16 +74,9 @@ function TimeHudHeader({
         />
       </div>
 
-      {/* 角落装饰 */}
-      <div className="absolute left-6 top-4 flex items-center gap-2">
-        <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
-          EPHEMERA.V1.1
-        </span>
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
-      </div>
-
-      <div className="absolute right-6 top-4 flex items-center gap-2">
-        <span className="text-[10px] text-[#A3A3A3] font-mono">SYS.NOMINAL</span>
+      {/* 移动端：语言切换器放在日期下方 */}
+      <div className="flex items-center justify-center pb-2 sm:hidden">
+        <LanguageSwitcher />
       </div>
     </header>
   );

@@ -10,7 +10,7 @@ export const i18nCookie = createCookie('lng', {
   sameSite: 'lax',
   secure: !isDEV,
   maxAge,
-  httpOnly: true,
+  httpOnly: false, // 允许客户端 JS 读写
 });
 
 export const i18nServer = new RemixI18Next({

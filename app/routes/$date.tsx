@@ -7,12 +7,14 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { FullscreenScene, FullscreenVoidScene } from '~/components/canvas/scene';
 import { DateNavigation } from '~/components/ui/date-navigation';
 import { DetailSheet } from '~/components/ui/detail-sheet';
 import { HudOverlay } from '~/components/ui/hud-decorations';
 import { InsightPanel, SourcesPanel, VoidInsightPanel } from '~/components/ui/insight-panel';
+import { LanguageSwitcher } from '~/components/ui/language-switcher';
 import { LoadingScreen } from '~/components/ui/loading-screen';
 import { useDateNavigationKeys, useEscapeKey } from '~/hooks/use-keyboard';
 import { getDailyWorldByDate } from '~/lib/api';
@@ -92,6 +94,22 @@ function TimeHudHeader({
 }) {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 safe-area-pt">
+      {/* 第一行：左右角落装饰 (桌面端) */}
+      <div className="absolute left-6 top-4 hidden sm:block">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
+            EPHEMERA.V1.1
+          </span>
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
+        </div>
+      </div>
+
+      <div className="absolute right-6 top-4 hidden items-center gap-4 sm:flex">
+        <LanguageSwitcher />
+        <span className="text-[10px] text-[#A3A3A3] font-mono">SYS.NOMINAL</span>
+      </div>
+
+      {/* 中央日期导航 */}
       <div className="flex items-center justify-center py-4">
         <DateNavigation
           date={date}
@@ -102,15 +120,9 @@ function TimeHudHeader({
         />
       </div>
 
-      <div className="absolute left-6 top-4 flex items-center gap-2">
-        <span className="text-[10px] text-[#A3A3A3] tracking-[0.2em] font-mono uppercase">
-          EPHEMERA.V1.1
-        </span>
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#3B82F6]" />
-      </div>
-
-      <div className="absolute right-6 top-4 flex items-center gap-2">
-        <span className="text-[10px] text-[#A3A3A3] font-mono">SYS.NOMINAL</span>
+      {/* 移动端：语言切换器放在日期下方 */}
+      <div className="flex items-center justify-center pb-2 sm:hidden">
+        <LanguageSwitcher />
       </div>
     </header>
   );
@@ -121,6 +133,7 @@ function TimeHudHeader({
  * URL: /{YYYY-MM-DD}
  */
 export default function DateRoute() {
+  const { t } = useTranslation('common');
   const params = useParams();
   const navigate = useNavigate();
   const dateParam = params.date as string;
@@ -181,7 +194,7 @@ export default function DateRoute() {
         }
       } catch (err) {
         if (isMounted) {
-          const errorObj = err instanceof Error ? err : new Error('未知错误');
+          const errorObj = err instanceof Error ? err : new Error(t('error.unknown'));
           setError(errorObj);
           setData(null);
           setStatus('VOID');
@@ -191,7 +204,7 @@ export default function DateRoute() {
 
     // 验证日期格式
     if (!parseDate(dateParam)) {
-      setError(new Error('无效的日期格式'));
+      setError(new Error(t('error.invalidDate')));
       setStatus('VOID');
       return;
     }
@@ -201,7 +214,7 @@ export default function DateRoute() {
     return () => {
       isMounted = false;
     };
-  }, [dateStr, dateParam, isToday, navigate]);
+  }, [dateStr, dateParam, isToday, navigate, t]);
 
   // 键盘快捷键
   useDateNavigationKeys(goToPrev, goToNext, !isDetailOpen);
