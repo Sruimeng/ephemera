@@ -44,14 +44,20 @@ export const FALLBACK_MODEL_URL =
 
 /**
  * Process model URL for CORS proxy
+ * Only proxy tripo3d.com direct URLs, not CF Worker URLs
  */
 export function processModelUrl(url: string): string {
   if (!url) return FALLBACK_MODEL_URL;
 
   const httpsUrl = url.replace(/^http:/, 'https:');
 
-  if (httpsUrl.includes('tripo3d.com')) {
-    return `${API_V5_BASE}${API_ENDPOINTS.PROXY_MODEL}?url=${encodeURIComponent(httpsUrl)}`;
+  try {
+    const hostname = new URL(httpsUrl).hostname;
+    if (hostname.endsWith('tripo3d.com')) {
+      return `${API_V5_BASE}${API_ENDPOINTS.PROXY_MODEL}?url=${encodeURIComponent(httpsUrl)}`;
+    }
+  } catch {
+    // Invalid URL, return as-is
   }
 
   return httpsUrl;
