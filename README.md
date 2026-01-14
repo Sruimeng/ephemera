@@ -1,249 +1,389 @@
-# React Router v7 Template
+---
+id: readme
+type: overview
+related_ids: [constitution, strategy-ephemera-v3, daily-world-api-quick-ref]
+---
 
-[![Use this template](https://img.shields.io/badge/Use%20this-template-blue?style=for-the-badge)](https://github.com/YOUR_USERNAME/react-router-v7-template/generate)
-[![GitHub license](https://img.shields.io/github/license/YOUR_USERNAME/react-router-v7-template?style=for-the-badge)](./LICENSE)
+# Ephemera V3 - Daily World News Aggregator
 
-一个基于 React Router v7 的现代化 React SSR 项目模板。
+> **Project**: Digital Art Gallery + News Aggregation
+> **Stack**: React Router v7 + React 19 + R3F (SPA Mode)
+> **Status**: 🚧 Active Development
 
-## 🚀 使用此模板
-
-### 方式一：GitHub Template（推荐）
-
-1. 点击上方的 **"Use this template"** 按钮
-2. 选择 **"Create a new repository"**
-3. 填写你的仓库名称和描述
-4. 点击 **"Create repository"**
-
-### 方式二：手动克隆
-
-```bash
-# 使用 degit 克隆（不包含 git 历史）
-npx degit YOUR_USERNAME/react-router-v7-template my-project
-
-# 或者使用 git clone
-git clone https://github.com/YOUR_USERNAME/react-router-v7-template.git my-project
-cd my-project
-rm -rf .git
-git init
-```
-
-### 初始化项目
-
-克隆后，请执行以下步骤：
-
-1. **更新 `package.json`**：
-   - 修改 `name` 为你的项目名称
-   - 更新 `description`、`author`、`repository` 等字段
-
-2. **安装依赖**：
-   ```bash
-   pnpm install
-   ```
-
-3. **启动开发服务器**：
-   ```bash
-   pnpm dev
-   ```
-
-## 技术栈
-
-| 类别 | 技术 | 版本 |
-|------|------|------|
-| **框架** | React | ^19.0.0 |
-| **路由** | React Router | ^7.6.2 |
-| **构建工具** | Vite | ^6.3.5 |
-| **样式方案** | UnoCSS | ^66.2.0 |
-| **状态管理** | Zustand | ^5.0.3 |
-| **国际化** | i18next + remix-i18next | ^24.2.1 / ^7.2.0 |
-| **主题** | remix-themes | ^2.0.4 |
-| **表单** | react-hook-form + zod | ^7.54.2 / ^3.24.1 |
-| **HTTP 客户端** | ofetch | ^1.4.1 |
-| **包管理** | pnpm | >=9.6.0 |
-
-## 快速开始
-
-### 环境要求
-
-- Node.js >= 20.0.0
-- pnpm >= 9.6.0
-
-### 安装
-
-```bash
-# 克隆项目
-git clone <your-repo-url>
-cd react-router-v7-template
-
-# 安装依赖
-pnpm install
-```
-
-### 开发
-
-```bash
-# 启动开发服务器
-pnpm dev
-```
-
-### 构建
-
-```bash
-# 生产构建
-pnpm build
-
-# 或指定环境
-pnpm build-production
-pnpm build-staging
-```
-
-### 启动生产服务器
-
-```bash
-pnpm start
-```
-
-## 项目结构
+## 1. Project Overview
 
 ```
-├── app/
-│   ├── components/       # 通用组件
-│   │   ├── canonical.tsx
-│   │   ├── error-boundary.tsx
+TYPE: News Aggregation Application
+PURPOSE: 高性能新闻聚合前端，展示 AI 生成的每日简报
+FEATURES:
+  - 3D Art Visualization (R3F)
+  - Multi-language Support (7 languages)
+  - Real-time News API Integration
+  - Post-processing Visual Effects
+```
+
+## 2. Tech Stack
+
+### Core Dependencies
+
+| Category | Technology | Version | Purpose |
+|----------|-----------|---------|---------|
+| **Framework** | React Router | ^7.12.0 | SPA Routing |
+| **UI** | React | ^19.0.0 | UI Framework |
+| **Build** | Vite | ^7.3.1 | Build Tool |
+| **Language** | TypeScript | ^5.8.3 | Type Safety |
+| **Styling** | UnoCSS | ^66.2.0 | Atomic CSS |
+| **State** | Zustand | ^5.0.3 | State Management |
+| **3D** | React Three Fiber | ^9.5.0 | 3D Rendering |
+| **Effects** | Postprocessing | ^6.38.2 | Visual Effects |
+
+### 3D Rendering Stack
+
+- **Engine**: React Three Fiber (R3F)
+- **Tools**: @react-three/drei
+- **Post-processing**: @react-three/postprocessing
+- **Models**: GLB format via Tripo generation
+
+## 3. Project Structure
+
+```
+ephemera/
+├── app/                            # Application Source
+│   ├── entry.client.tsx            # Client Entry Point
+│   ├── root.tsx                    # Root Component
+│   ├── root.css                    # Global Styles
+│   ├── routes.ts                   # Route Configuration
+│   │
+│   ├── routes/                     # Route Pages
+│   │   ├── _index.tsx              # Home Page (State Machine)
+│   │   ├── $date.tsx               # Date-specific Route
+│   │   └── 404/                    # 404 Page
+│   │
+│   ├── components/
+│   │   ├── ui/                     # UI Components
+│   │   │   ├── header.tsx
+│   │   │   ├── loading-screen.tsx
+│   │   │   ├── insight-panel.tsx
+│   │   │   ├── detail-sheet.tsx
+│   │   │   ├── glass-card.tsx
+│   │   │   ├── date-pill.tsx
+│   │   │   ├── date-navigation.tsx
+│   │   │   ├── language-switcher.tsx
+│   │   │   ├── filter-selector.tsx
+│   │   │   └── hud-decorations.tsx
+│   │   │
+│   │   ├── canvas/                 # 3D Components
+│   │   │   ├── scene.tsx           # Main Scene Container
+│   │   │   ├── model.tsx           # GLB Model Loader
+│   │   │   ├── void-sphere.tsx     # Void Sphere Component
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── post-processing/        # Visual Effects
+│   │   │   ├── composer.tsx        # Effect Composer
+│   │   │   ├── context.tsx         # Post-processing Context
+│   │   │   ├── materials/          # Custom Materials
+│   │   │   │   ├── ascii-material.tsx
+│   │   │   │   ├── blueprint-material.tsx
+│   │   │   │   ├── claymation-material.tsx
+│   │   │   │   ├── crystal-material.tsx
+│   │   │   │   ├── glitch-material.tsx
+│   │   │   │   ├── halftone-material.tsx
+│   │   │   │   ├── pixel-material.tsx
+│   │   │   │   └── sketch-material.tsx
+│   │   │   ├── effects/            # Post-processing Effects
+│   │   │   │   ├── base-effects.tsx
+│   │   │   │   ├── blueprint-edge-effect.tsx
+│   │   │   │   ├── cyber-glitch-effect.tsx
+│   │   │   │   └── scanline-effect.tsx
+│   │   │   └── backgrounds/        # Background Scenes
+│   │   │       ├── blueprint-grid-background.tsx
+│   │   │       ├── matrix-rain-background.tsx
+│   │   │       ├── newspaper-background.tsx
+│   │   │       └── sketchbook-background.tsx
+│   │   │
+│   │   └── canonical.tsx
+│   │   └── error-boundary.tsx
 │   │   └── layout.tsx
-│   ├── constants/        # 常量配置
-│   │   ├── meta/         # 环境变量、服务配置
-│   │   └── static/       # 静态枚举、存储键
-│   ├── hooks/            # 自定义 Hooks
+│   │
+│   ├── lib/                        # Utilities
+│   │   ├── api.ts                  # API Client (v5)
+│   │   ├── api-v5.ts               # API v5 Implementation
+│   │   └── api-adapter.ts          # API Adapter
+│   │
+│   ├── hooks/                      # Custom Hooks
+│   │   ├── use-daily-world.ts      # News Data Hook
+│   │   ├── use-forge.ts            # 3D Forge Hook
+│   │   ├── use-keyboard.ts         # Keyboard Controls
+│   │   ├── use-context.ts          # Context Utilities
 │   │   ├── debounce.ts
 │   │   ├── navigate.ts
-│   │   └── request.ts
-│   ├── locales/          # 国际化资源
-│   │   ├── lib/          # i18next 配置
-│   │   ├── en/           # 英文
-│   │   ├── zh/           # 中文
-│   │   └── ...           # 其他语言
-│   ├── routes/           # 路由页面
-│   │   ├── _index.tsx    # 首页
-│   │   ├── 404/          # 404 页面
-│   │   ├── api.set-locale.ts
-│   │   └── api.set-theme.ts
-│   ├── store/            # 状态管理
-│   │   └── utils/        # Zustand 工具
-│   ├── utils/            # 工具函数
-│   ├── entry.client.tsx  # 客户端入口
-│   ├── entry.server.tsx  # 服务端入口
-│   ├── root.tsx          # 根组件
-│   ├── root.css          # 全局样式
-│   └── routes.ts         # 路由配置
-├── llmdoc/               # LLM 文档
-├── .husky/               # Git Hooks
-├── .vscode/              # VSCode 配置
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── uno.config.ts
-├── eslint.config.js
-├── stylelint.config.js
-└── react-router.config.ts
+│   │   ├── request.ts
+│   │   └── index.ts
+│   │
+│   ├── store/                      # State Management
+│   │   ├── use-app-store.ts        # Main App Store
+│   │   └── utils/
+│   │
+│   ├── types/                      # Type Definitions
+│   │   ├── api.ts                  # API Types
+│   │   ├── api-v5.ts               # API v5 Types
+│   │   ├── store.ts                # Store Types
+│   │   └── index.ts
+│   │
+│   ├── constants/                  # Configuration
+│   │   ├── meta/                   # Service Config
+│   │   │   ├── env.ts
+│   │   │   ├── service.ts          # API Endpoints
+│   │   │   └── index.ts
+│   │   └── static/                 # Static Data
+│   │       ├── enum.ts
+│   │       ├── storage.ts
+│   │       └── index.ts
+│   │
+│   ├── locales/                    # i18n Resources
+│   │   ├── lib/                    # i18next Config
+│   │   ├── en/                     # English
+│   │   ├── zh/                     # Chinese
+│   │   ├── ja/                     # Japanese
+│   │   ├── ko/                     # Korean
+│   │   ├── es/                     # Spanish
+│   │   ├── pt/                     # Portuguese
+│   │   ├── ru/                     # Russian
+│   │   └── index.ts
+│   │
+│   └── utils/                      # Helper Functions
+│       ├── cookie.ts
+│       ├── storage.ts
+│       ├── utils.ts
+│       └── index.ts
+│
+├── llmdoc/                         # Documentation Center
+├── public/                         # Static Assets
+├── package.json                    # Dependencies
+├── vite.config.ts                  # Vite Config
+├── uno.config.ts                   # UnoCSS Config
+├── tsconfig.json                   # TypeScript Config
+├── react-router.config.ts          # React Router Config
+└── Dockerfile                      # Container Build
 ```
 
-## 核心功能
+## 4. Core Features
 
-### 🌐 国际化 (i18n)
+### 4.1 State Machine
 
-支持多语言，默认包含：en, zh, ja, ko, es, pt, ru
+```
+STATE_MACHINE:
+  [IDLE] → [LOADING] → [TOTEM] ↔ [DETAIL]
+                ↓
+            [ERROR]
 
-```tsx
-import { useTranslation } from 'react-i18next';
+TRANSITIONS:
+  - Initial Load: IDLE → LOADING → TOTEM
+  - View Details: TOTEM → DETAIL
+  - Close Details: DETAIL → TOTEM
+  - API Error: LOADING → ERROR
+```
 
-function MyComponent() {
-  const { t } = useTranslation('common');
-  return <h1>{t('welcome')}</h1>;
+### 4.2 API Integration
+
+**Endpoint**: `https://api.sruim.xin/api/daily-world`
+
+**Data Flow**:
+```typescript
+// app/lib/api-v5.ts
+FUNCTION getDailyWorld(date?: string):
+  1. CONSTRUCT url = API_BASE + '/api/daily-world' + (date ? `?date=${date}` : '')
+  2. FETCH with headers
+  3. VALIDATE response
+  4. RETURN NormalizedDailyWorld
+```
+
+**Type Safety**:
+- `DailyWorldData` - Raw API response
+- `NormalizedDailyWorld` - Frontend normalized data
+- `ApiError` - Error handling
+
+### 4.3 3D Visualization
+
+**Scene Configuration**:
+- **Canvas**: `#F5F5F7` background
+- **Camera**: FOV 45°, Position [0, 0, 5]
+- **Controls**: OrbitControls with vertical limits (45°-120°)
+- **Lighting**: Ambient + Directional + Environment
+- **Shadows**: Contact Shadows with blur
+
+**Post-processing Effects**:
+- ASCII Art
+- Blueprint Grid
+- Claymation
+- Crystal
+- Glitch
+- Halftone
+- Pixel
+- Sketch
+- Matrix Rain
+- Newspaper
+- Cyber Glitch
+- Scanline
+
+### 4.4 Internationalization
+
+**Supported Languages**:
+- English (en) - Default
+- 中文 (zh)
+- 日本語 (ja)
+- 한국어 (ko)
+- Español (es)
+- Português (pt)
+- Русский (ru)
+
+**Resource Structure**:
+```
+app/locales/{lang}/
+  ├── common.json       # Common UI Text
+  └── error-toast.json  # Error Messages
+```
+
+## 5. Development
+
+### 5.1 Prerequisites
+
+```bash
+Node.js >= 20.0.0
+pnpm >= 9.6.0
+```
+
+### 5.2 Commands
+
+```bash
+# Development
+pnpm dev
+
+# Build
+pnpm build
+pnpm build-production
+pnpm build-staging
+
+# Production
+pnpm start
+
+# Quality
+pnpm lint
+pnpm typecheck
+
+# Cleanup
+pnpm clear
+```
+
+### 5.3 Environment
+
+```typescript
+// app/constants/meta/env.ts
+API_BASE: 'https://api.sruim.xin'
+```
+
+## 6. Design System
+
+### 6.1 Color Palette
+
+| Role | Color | Hex | Usage |
+|------|-------|-----|-------|
+| Canvas | Off-White | `#F5F5F7` | Background |
+| Tint | Sruim Blue | `#54B6F5` | Accent |
+| Glass | Translucent | `rgba(255,255,255,0.72)` | Glassmorphism |
+| Text Primary | SF Black | `#1D1D1F` | Main Text |
+| Text Secondary | Slate Gray | `#86868B` | Secondary Text |
+
+### 6.2 Glassmorphism
+
+```css
+backdrop-filter: blur(20px) saturate(180%);
+background: rgba(255,255,255,0.72);
+border: 1px solid rgba(255,255,255,0.3);
+```
+
+### 6.3 Border Radius
+
+- **Cards**: 20px
+- **Pills**: 999px
+- **Containers**: 3xl (24px)
+
+## 7. Deployment
+
+### 7.1 Docker
+
+```dockerfile
+# Multi-stage build
+FROM node:20-alpine AS builder
+FROM node:20-alpine AS runner
+```
+
+### 7.2 Production Server
+
+- **Server**: Caddy
+- **Config**: Automatic HTTPS
+- **Mode**: Standalone Docker
+
+## 8. Documentation
+
+### 8.1 Core Documents
+
+- **Constitution**: `llmdoc/reference/constitution.md` - Project standards
+- **Strategy**: `llmdoc/agent/strategy-ephemera-v3.md` - Development plan
+- **API Quick Ref**: `llmdoc/guides/daily-world-api-quick-ref.md` - API reference
+
+### 8.2 Doc-Driven Development
+
+```
+1. Define types in llmdoc/reference/
+2. Design architecture in llmdoc/architecture/
+3. Write guides in llmdoc/guides/
+4. Implement code
+5. Update documentation
+```
+
+## 9. Quality Standards
+
+### 9.1 Type Safety
+
+- ✅ No `any` types
+- ✅ Strict TypeScript
+- ✅ Interface-first development
+
+### 9.2 Component Rules
+
+- ✅ Server Components for data fetching
+- ✅ Client Components for interactivity
+- ✅ `'use client'` for 3D components
+
+### 9.3 Performance
+
+- **FCP**: < 1.5s
+- **TTI**: < 3s
+- **SPA**: Client-side rendering
+
+## 10. API Reference
+
+**Base URL**: `https://api.sruim.xin`
+
+**Endpoints**:
+- `GET /api/daily-world` - Today's news
+- `GET /api/daily-world?date=YYYY-MM-DD` - Specific date
+
+**Response Type**:
+```typescript
+interface DailyWorldData {
+  date: string;
+  theme: string;
+  summary: string;
+  news: string[];
+  model_url: string;
+  tripo_prompt: string;
 }
 ```
 
-### 🎨 主题切换
+See: `app/lib/api-v5.ts:1`
 
-支持亮色/暗色主题切换：
-
-```tsx
-import { useTheme } from 'remix-themes';
-
-function ThemeToggle() {
-  const [theme, setTheme] = useTheme();
-  return (
-    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      Toggle Theme
-    </button>
-  );
-}
-```
-
-### 📦 状态管理
-
-使用 Zustand 进行状态管理：
-
-```tsx
-import { create } from 'zustand';
-
-const useStore = create((set) => ({
-  count: 0,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-}));
-```
-
-### 🎯 UnoCSS
-
-原子化 CSS 框架，支持 Tailwind CSS 语法：
-
-```tsx
-<div className="flex items-center justify-center min-h-screen bg-background">
-  <h1 className="text-4xl font-bold text-foreground">Hello World</h1>
-</div>
-```
-
-### 📝 表单处理
-
-使用 react-hook-form + zod 进行表单验证：
-
-```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-function LoginForm() {
-  const { register, handleSubmit } = useForm({
-    resolver: zodResolver(schema),
-  });
-  // ...
-}
-```
-
-## 脚本命令
-
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动开发服务器 |
-| `pnpm build` | 构建生产版本 |
-| `pnpm start` | 启动生产服务器 |
-| `pnpm lint` | 运行 ESLint 检查并修复 |
-| `pnpm typecheck` | TypeScript 类型检查 |
-| `pnpm clear` | 清理构建产物 |
-
-## 配置文件
-
-- [`vite.config.ts`](vite.config.ts) - Vite 构建配置
-- [`uno.config.ts`](uno.config.ts) - UnoCSS 样式配置
-- [`tsconfig.json`](tsconfig.json) - TypeScript 配置
-- [`eslint.config.js`](eslint.config.js) - ESLint 配置
-- [`stylelint.config.js`](stylelint.config.js) - Stylelint 配置
-- [`react-router.config.ts`](react-router.config.ts) - React Router 配置
-
-## License
+## 11. License
 
 MIT
