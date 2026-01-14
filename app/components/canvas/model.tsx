@@ -69,6 +69,29 @@ function FilterMaterial({ filter }: { filter: MaterialFilter }) {
   }
 }
 
+function useResponsiveScale(baseScale: number = 3): number {
+  const [scale, setScale] = useState(baseScale);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setScale(baseScale * 0.55);
+      } else if (width < 1024) {
+        setScale(baseScale * 0.75);
+      } else {
+        setScale(baseScale);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, [baseScale]);
+
+  return scale;
+}
+
 /**
  * 模型内容组件 - 支持材质替换
  */
@@ -77,6 +100,7 @@ function ModelContent({ url, onLoad }: { url: string; onLoad?: () => void }) {
   const groupRef = useRef<Group>(null);
   const hasCalledOnLoad = useRef(false);
   const { filter } = useStyleFilter();
+  const modelScale = useResponsiveScale(3);
 
   const clonedScene = useMemo(() => scene.clone(), [scene]);
 
@@ -116,16 +140,16 @@ function ModelContent({ url, onLoad }: { url: string; onLoad?: () => void }) {
 
   return (
     <group ref={groupRef}>
-      {!useMaterialFilter && <primitive object={clonedScene} scale={3} />}
+      {!useMaterialFilter && <primitive object={clonedScene} scale={modelScale} />}
 
       {useMaterialFilter &&
         geometries.map((item, i) => (
           <group key={i}>
-            <mesh geometry={item.geometry} scale={3}>
+            <mesh geometry={item.geometry} scale={modelScale}>
               <FilterMaterial filter={filter as MaterialFilter} />
             </mesh>
             {isSketchFilter && (
-              <mesh geometry={item.geometry} scale={3}>
+              <mesh geometry={item.geometry} scale={modelScale}>
                 <SketchOutlineMaterial />
               </mesh>
             )}
