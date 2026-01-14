@@ -34,10 +34,6 @@ async function hydrate() {
   });
 }
 
-if (window.requestIdleCallback) {
-  window.requestIdleCallback(hydrate);
-} else {
-  // Safari doesn't support requestIdleCallback
-  // https://caniuse.com/requestidlecallback
-  window.setTimeout(hydrate, 1);
-}
+// 立即执行 hydration，避免移动端首次点击失效
+// requestIdleCallback 会延迟 hydration，导致 SSR 渲染的 HTML 无法响应事件
+hydrate();
