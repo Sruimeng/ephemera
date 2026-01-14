@@ -22,7 +22,7 @@
   "scripts": {
     "prepare": "husky",
     "dev": "react-router dev",
-    "start": "react-router-serve ./dist/server/index.js",
+    "start": "caddy run --config Caddyfile",
     "lint": "eslint . --fix",
     "clear": "rm -rf ./dist ./pruned",
     "typecheck": "tsc --noEmit",
