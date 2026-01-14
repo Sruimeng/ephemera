@@ -6,7 +6,7 @@
  * @see PRD V1.1 Section 3.3
  */
 
-import { ContactShadows, Environment, OrbitControls, Stars } from '@react-three/drei';
+import { Environment, OrbitControls, Stars } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import type React from 'react';
 import { Component, Suspense, type ReactNode } from 'react';
@@ -140,16 +140,6 @@ function SceneEnvironment({ children }: { children: ReactNode }) {
 
       {children}
 
-      {/* 接触阴影 */}
-      <ContactShadows
-        position={[0, -1.8, 0]}
-        opacity={0.6}
-        scale={1000}
-        blur={10}
-        far={4}
-        color="#000000"
-      />
-
       {/* 交互控制 */}
       <OrbitControls
         enablePan={false}
@@ -208,7 +198,7 @@ export const Scene: React.FC<SceneProps> = ({ modelUrl, onLoad, onError, classNa
   );
 
   return (
-    <div className={`w-full h-full ${className || ''}`}>
+    <div className={`h-full w-full ${className || ''}`}>
       <CanvasErrorBoundary onError={onError} fallback={renderCanvas(FALLBACK_MODEL_URL)}>
         {renderCanvas(effectiveUrl)}
       </CanvasErrorBoundary>
@@ -237,7 +227,7 @@ export const VoidScene: React.FC<{
   className?: string;
 }> = ({ className }) => {
   return (
-    <div className={`w-full h-full ${className || ''}`}>
+    <div className={`h-full w-full ${className || ''}`}>
       <Canvas
         camera={{
           position: [0, 0.5, 5],

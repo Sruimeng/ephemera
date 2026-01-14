@@ -237,7 +237,7 @@ export function BackgroundScene() {
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
 import { Suspense } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -270,14 +270,6 @@ export function ModelViewer({ modelUrl, className }: ModelViewerProps) {
           
           {/* 模型 */}
           <Model url={modelUrl} />
-          
-          {/* 接触阴影: 营造悬浮感 */}
-          <ContactShadows
-            opacity={0.4}
-            scale={10}
-            blur={2.5}
-            far={4}
-          />
           
           {/* 环境反射 */}
           <Environment preset="city" />
@@ -349,18 +341,7 @@ ORBIT_CONTROLS_CONFIG:
   autoRotateSpeed: 0.5          // 旋转速度
 ```
 
-#### 3.4.4 ContactShadows 配置
-
-```typescript
-// 接触阴影配置 (营造悬浮感)
-CONTACT_SHADOWS_CONFIG:
-  opacity: 0.4
-  scale: 10
-  blur: 2.5
-  far: 4
-```
-
-#### 3.4.5 完整 Scene 组件
+#### 3.4.4 完整 Scene 组件
 
 ```tsx
 // app/components/canvas/scene.tsx
@@ -370,8 +351,7 @@ import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
   useGLTF,
-  Environment,
-  ContactShadows
+  Environment
 } from '@react-three/drei';
 import { Suspense } from 'react';
 
@@ -399,12 +379,6 @@ export function Scene({ modelUrl }: SceneProps) {
       {/* 2. 模型加载与展示 */}
       <Suspense fallback={null}>
         <Model url={modelUrl} />
-        <ContactShadows
-          opacity={0.4}
-          scale={10}
-          blur={2.5}
-          far={4}
-        />
       </Suspense>
       
       {/* 3. 交互控制 */}

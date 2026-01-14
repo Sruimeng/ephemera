@@ -222,12 +222,6 @@ ORBIT_CONTROLS_CONFIG:
   autoRotate: true
   autoRotateSpeed: 0.5
 
-CONTACT_SHADOWS_CONFIG:
-  opacity: 0.4
-  scale: 10
-  blur: 2.5
-  far: 4
-
 LIGHTING_CONFIG:
   ambientLight:
     intensity: 0.5

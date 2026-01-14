@@ -153,7 +153,6 @@ root.tsx
     ├─► <Environment /> (HDR)
     ├─► <spotLight /> + <pointLight /> (Dramatic Lighting)
     ├─► <Model /> (GLB with material replacement)
-    ├─► <ContactShadows />
     ├─► <OrbitControls />
     ├─► <PostProcessingComposer />
     │
@@ -272,7 +271,7 @@ LAYERS:
 3D_VIEWPORT:
   - Model: 屏幕正中央
   - OrbitControls: autoRotate, 限制垂直角度
-  - Lighting: Studio + ContactShadows
+  - Lighting: Studio
 
 UI_LAYER:
   - Header: Logo + DatePill

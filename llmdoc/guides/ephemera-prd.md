@@ -132,7 +132,6 @@ LAYERS:
       - maxPolarAngle: Math.PI / 1.5
   - 光影:
       - Studio Lighting
-      - ContactShadows (opacity: 0.4, blur: 2.5)
 
 UI_LAYER:
   HEADER:
@@ -218,12 +217,6 @@ FUNCTION useDailyWorld(): UseDailyWorldResult
   {/* 2. 模型加载与展示 */}
   <Suspense fallback={null}>
     <Model url={data.model_url} />
-    <ContactShadows 
-      opacity={0.4} 
-      scale={10} 
-      blur={2.5} 
-      far={4} 
-    />
   </Suspense>
   
   {/* 3. 交互控制 */}
@@ -267,7 +260,6 @@ TASKS:
   [ ] 搭建 R3F Canvas
   [ ] 实现 GLB 加载器
   [ ] 调整灯光和材质
-  [ ] 添加 ContactShadows
   [ ] 配置 OrbitControls
 ```
 
