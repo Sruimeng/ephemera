@@ -7,7 +7,7 @@ related_ids: [constitution, strategy-ephemera-v3, daily-world-api-quick-ref]
 # Ephemera V3 - Daily World News Aggregator
 
 > **Project**: Digital Art Gallery + News Aggregation
-> **Stack**: React Router v7 + React 19 + R3F (SPA Mode)
+> **Stack**: React Router v7 + React 19 + R3F (SPA Mode, ssr: false)
 > **Status**: 🚧 Active Development
 
 ## 1. Project Overview
@@ -308,9 +308,37 @@ border: 1px solid rgba(255,255,255,0.3);
 - **Pills**: 999px
 - **Containers**: 3xl (24px)
 
-## 7. Deployment
+## 7. Architecture Notes
 
-### 7.1 Docker
+### 7.1 SPA Mode Configuration
+
+**Current State**: Pure SPA (Client-Side Only)
+
+```
+react-router.config.ts:
+  ssr: false
+
+Build Output:
+  - dist/client/index.html  ← Static HTML entry
+  - dist/client/assets/     ← JS/CSS bundles
+  - dist/server/            ← REMOVED (ssr: false)
+```
+
+**Why entry.server.tsx exists?**
+- Required by React Router v7 build system
+- Not used at runtime (SPA mode strips server build)
+- Can be removed if switching to pure Vite
+
+### 7.2 SSR Toggle
+
+To enable SSR:
+1. Set `ssr: true` in `react-router.config.ts`
+2. Keep `entry.server.tsx` and dependencies
+3. Deploy with Node.js server
+
+## 8. Deployment
+
+### 8.1 Docker
 
 ```dockerfile
 # Multi-stage build
@@ -318,21 +346,21 @@ FROM node:20-alpine AS builder
 FROM node:20-alpine AS runner
 ```
 
-### 7.2 Production Server
+### 8.2 Production Server
 
 - **Server**: Caddy
 - **Config**: Automatic HTTPS
 - **Mode**: Standalone Docker
 
-## 8. Documentation
+## 9. Documentation
 
-### 8.1 Core Documents
+### 9.1 Core Documents
 
 - **Constitution**: `llmdoc/reference/constitution.md` - Project standards
 - **Strategy**: `llmdoc/agent/strategy-ephemera-v3.md` - Development plan
 - **API Quick Ref**: `llmdoc/guides/daily-world-api-quick-ref.md` - API reference
 
-### 8.2 Doc-Driven Development
+### 9.2 Doc-Driven Development
 
 ```
 1. Define types in llmdoc/reference/
@@ -342,27 +370,27 @@ FROM node:20-alpine AS runner
 5. Update documentation
 ```
 
-## 9. Quality Standards
+## 10. Quality Standards
 
-### 9.1 Type Safety
+### 10.1 Type Safety
 
 - ✅ No `any` types
 - ✅ Strict TypeScript
 - ✅ Interface-first development
 
-### 9.2 Component Rules
+### 10.2 Component Rules
 
 - ✅ Server Components for data fetching
 - ✅ Client Components for interactivity
 - ✅ `'use client'` for 3D components
 
-### 9.3 Performance
+### 10.3 Performance
 
 - **FCP**: < 1.5s
 - **TTI**: < 3s
 - **SPA**: Client-side rendering
 
-## 10. API Reference
+## 11. API Reference
 
 **Base URL**: `https://api.sruim.xin`
 
