@@ -5,6 +5,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { HydratedRouter } from 'react-router/dom';
+import VConsole from 'vconsole';
+
+new VConsole();
 
 async function hydrate() {
   await i18next
