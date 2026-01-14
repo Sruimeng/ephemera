@@ -3,7 +3,6 @@
  * Normalizes v5 API responses to existing frontend types
  */
 
-import { processModelUrl } from '~/constants/meta/service';
 import type { NormalizedDailyWorld } from '~/types/api';
 import type { DailyContext } from '~/types/api-v5';
 
@@ -17,7 +16,7 @@ export function normalizeDailyContext(ctx: DailyContext, modelUrl = ''): Normali
     theme: ctx.suggested_prompt,
     summary: ctx.philosophy,
     news: ctx.news,
-    modelUrl: processModelUrl(modelUrl),
+    modelUrl,
     tripoPrompt: ctx.suggested_prompt,
   };
 }

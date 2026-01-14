@@ -16,26 +16,6 @@ interface ApiResponse {
 }
 
 /**
- * @deprecated Use processModelUrl from constants/meta/service.ts
- */
-function processModelUrl(url: string): string {
-  if (!url) return '';
-
-  const httpsUrl = url.replace(/^http:/, 'https:');
-
-  try {
-    const hostname = new URL(httpsUrl).hostname;
-    if (hostname.endsWith('tripo3d.com')) {
-      return `${API_BASE}/api/proxy-model?url=${encodeURIComponent(httpsUrl)}`;
-    }
-  } catch {
-    // Invalid URL
-  }
-
-  return httpsUrl;
-}
-
-/**
  * @deprecated Use normalizeDailyContext from api-adapter.ts
  */
 export function normalizeData(raw: DailyWorldData): NormalizedDailyWorld {
@@ -48,7 +28,7 @@ export function normalizeData(raw: DailyWorldData): NormalizedDailyWorld {
     theme: raw.object_description || 'Daily Zeitgeist',
     summary: raw.philosophy || '',
     news: raw.news || [],
-    modelUrl: processModelUrl(raw.model_url || ''),
+    modelUrl: raw.model_url || '',
     tripoPrompt: raw.object_description || '',
   };
 }

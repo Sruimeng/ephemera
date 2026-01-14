@@ -21,7 +21,6 @@ import {
   SketchMaterial,
   SketchOutlineMaterial,
 } from '~/components/post-processing/materials';
-import { fetchModelAsBlob } from '~/constants/meta/service';
 import { ModelLoadingPlaceholder } from './void-sphere';
 
 interface ModelProps {
@@ -162,49 +161,20 @@ function ModelContent({ url, onLoad }: { url: string; onLoad?: () => void }) {
 /**
  * 模型加载器
  */
-function ModelLoader({ url, onLoad, onError }: ModelProps) {
-  const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+function ModelLoader({ url, onLoad }: Omit<ModelProps, 'onError'>) {
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    let revoke: string | null = null;
-    setIsLoading(true);
-
-    fetchModelAsBlob(url)
-      .then((result) => {
-        setBlobUrl(result);
-        if (result !== url) revoke = result;
-      })
-      .catch((err) => {
-        setError(err);
-        onError?.(err);
-        setIsLoading(false);
-      });
-
-    return () => {
-      if (revoke) URL.revokeObjectURL(revoke);
-    };
-  }, [url, onError]);
 
   const handleModelLoad = () => {
     setIsLoading(false);
     onLoad?.();
   };
 
-  if (error) return null;
-
   return (
     <>
-      {/* 加载占位 - 模型加载完成前显示 */}
       {isLoading && <ModelLoadingPlaceholder />}
-
-      {/* 模型内容 */}
-      {blobUrl && (
-        <Suspense fallback={<ModelLoadingPlaceholder />}>
-          <ModelContent url={blobUrl} onLoad={handleModelLoad} />
-        </Suspense>
-      )}
+      <Suspense fallback={<ModelLoadingPlaceholder />}>
+        <ModelContent url={url} onLoad={handleModelLoad} />
+      </Suspense>
     </>
   );
 }
@@ -212,10 +182,10 @@ function ModelLoader({ url, onLoad, onError }: ModelProps) {
 /**
  * GLB 模型组件
  */
-export function Model({ url, onLoad, onError }: ModelProps) {
+export function Model({ url, onLoad }: ModelProps) {
   if (!url) return null;
 
-  return <ModelLoader url={url} onLoad={onLoad} onError={onError} />;
+  return <ModelLoader url={url} onLoad={onLoad} />;
 }
 
 /**
@@ -228,8 +198,6 @@ export const AnimatedModel = Model;
  */
 export function preloadModel(url: string) {
   if (url) {
-    fetchModelAsBlob(url).then((blobUrl) => {
-      useGLTF.preload(blobUrl);
-    });
+    useGLTF.preload(url);
   }
 }
