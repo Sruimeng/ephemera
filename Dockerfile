@@ -22,9 +22,12 @@ RUN pnpm build
 # Production stage
 FROM zeabur/caddy-static:latest
 
-# Copy the client build output
-# Trailing slash on source ensures we copy the CONTENTS of the directory
-COPY --from=build /app/dist/client/ /usr/share/caddy/
+# Set working directory to Caddy's root
+WORKDIR /usr/share/caddy
+
+# Copy the CONTENTS of the client directory to the current directory
+# This avoids ambiguity with trailing slashes
+COPY --from=build /app/dist/client/ .
 
 # Create Caddyfile for proper SPA routing
 RUN cat > /etc/caddy/Caddyfile <<'EOF'
@@ -33,6 +36,8 @@ RUN cat > /etc/caddy/Caddyfile <<'EOF'
     encode gzip
 
     # Handle SPA routing
+    # If the file exists, serve it.
+    # If not, serve index.html (client-side routing)
     try_files {path} /index.html
 
     # Default file server
