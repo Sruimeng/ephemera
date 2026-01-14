@@ -2,181 +2,194 @@
 
 /**
  * GLB 模型加载组件
- * 带切换动画的模型组件
- * @see PRD V1.1 Section 2.3 - 模型切换动画
+ * 支持滤镜材质替换
  */
 
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import type { Group } from 'three';
-import * as THREE from 'three';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import type * as THREE from 'three';
+import type { Group, Mesh } from 'three';
+import { useStyleFilter } from '~/components/post-processing';
+import {
+  ASCIIMaterial,
+  BlueprintMaterial,
+  ClaymationMaterial,
+  CrystalMaterial,
+  HalftoneMaterial,
+  PixelMaterial,
+  SketchMaterial,
+  SketchOutlineMaterial,
+} from '~/components/post-processing/materials';
+import { fetchModelAsBlob } from '~/constants/meta/service';
 
 interface ModelProps {
-  /** GLB 模型 URL */
   url: string;
-  /** 模型缩放比例 */
   scale?: number;
-  /** 模型位置 */
   position?: [number, number, number];
-  /** 加载完成回调 */
   onLoad?: () => void;
-  /** 加载错误回调 */
   onError?: (error: Error) => void;
+}
+
+const MATERIAL_FILTERS = [
+  'blueprint',
+  'halftone',
+  'ascii',
+  'sketch',
+  'crystal',
+  'claymation',
+  'pixel',
+] as const;
+
+type MaterialFilter = (typeof MATERIAL_FILTERS)[number];
+
+function isMaterialFilter(filter: string): filter is MaterialFilter {
+  return MATERIAL_FILTERS.includes(filter as MaterialFilter);
+}
+
+function FilterMaterial({ filter }: { filter: MaterialFilter }) {
+  switch (filter) {
+    case 'blueprint':
+      return <BlueprintMaterial />;
+    case 'halftone':
+      return <HalftoneMaterial />;
+    case 'ascii':
+      return <ASCIIMaterial />;
+    case 'sketch':
+      return <SketchMaterial />;
+    case 'crystal':
+      return <CrystalMaterial />;
+    case 'claymation':
+      return <ClaymationMaterial />;
+    case 'pixel':
+      return <PixelMaterial />;
+    default:
+      return null;
+  }
+}
+
+/**
+ * 模型内容组件 - 支持材质替换
+ */
+function ModelContent({ url, onLoad }: { url: string; onLoad?: () => void }) {
+  const { scene } = useGLTF(url);
+  const groupRef = useRef<Group>(null);
+  const hasCalledOnLoad = useRef(false);
+  const { filter } = useStyleFilter();
+
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+  useEffect(() => {
+    if (hasCalledOnLoad.current) return;
+    if (!onLoad) return;
+
+    hasCalledOnLoad.current = true;
+    onLoad();
+  }, [onLoad]);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+    }
+  });
+
+  const geometries = useMemo(() => {
+    const geos: { geometry: THREE.BufferGeometry; matrix: THREE.Matrix4 }[] = [];
+    scene.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
+        if (mesh.geometry) {
+          geos.push({
+            geometry: mesh.geometry,
+            matrix: mesh.matrixWorld.clone(),
+          });
+        }
+      }
+    });
+    return geos;
+  }, [scene]);
+
+  const useMaterialFilter = isMaterialFilter(filter);
+  const isSketchFilter = filter === 'sketch';
+
+  return (
+    <group ref={groupRef}>
+      {!useMaterialFilter && <primitive object={clonedScene} scale={3} />}
+
+      {useMaterialFilter &&
+        geometries.map((item, i) => (
+          <group key={i}>
+            <mesh geometry={item.geometry} scale={3}>
+              <FilterMaterial filter={filter as MaterialFilter} />
+            </mesh>
+            {isSketchFilter && (
+              <mesh geometry={item.geometry} scale={3}>
+                <SketchOutlineMaterial />
+              </mesh>
+            )}
+          </group>
+        ))}
+    </group>
+  );
+}
+
+/**
+ * 模型加载器
+ */
+function ModelLoader({ url, onLoad, onError }: ModelProps) {
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let revoke: string | null = null;
+
+    fetchModelAsBlob(url)
+      .then((result) => {
+        setBlobUrl(result);
+        if (result !== url) revoke = result;
+      })
+      .catch((err) => {
+        setError(err);
+        onError?.(err);
+      });
+
+    return () => {
+      if (revoke) URL.revokeObjectURL(revoke);
+    };
+  }, [url, onError]);
+
+  if (error) return null;
+  if (!blobUrl) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <ModelContent url={blobUrl} onLoad={onLoad} />
+    </Suspense>
+  );
 }
 
 /**
  * GLB 模型组件
- *
- * @example
- * ```tsx
- * <Model url="https://example.com/model.glb" scale={1.5} />
- * ```
  */
-export const Model: React.FC<ModelProps> = ({
-  url,
-  scale = 1,
-  position = [0, 0, 0],
-  onLoad,
-  onError,
-}) => {
-  const groupRef = useRef<Group>(null);
+export function Model({ url, onLoad, onError }: ModelProps) {
+  if (!url) return null;
 
-  // 使用 useGLTF 加载模型
-  const { scene } = useGLTF(url, true, true, (loader) => {
-    loader.manager.onError = (errorUrl) => {
-      onError?.(new Error(`Failed to load: ${errorUrl}`));
-    };
-  });
-
-  useEffect(() => {
-    if (scene) {
-      // 计算模型边界框并居中
-      const box = new THREE.Box3().setFromObject(scene);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-
-      // 将模型居中
-      scene.position.sub(center);
-
-      // 根据模型大小自动调整缩放
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const targetSize = 2; // 目标大小
-      const autoScale = targetSize / maxDim;
-
-      if (groupRef.current) {
-        groupRef.current.scale.setScalar(autoScale * scale);
-      }
-
-      onLoad?.();
-    }
-  }, [scene, scale, onLoad]);
-
-  return (
-    <group ref={groupRef} position={position}>
-      <primitive object={scene.clone()} />
-    </group>
-  );
-};
+  return <ModelLoader url={url} onLoad={onLoad} onError={onError} />;
+}
 
 /**
- * 带动画的模型组件
- * 支持缩放过渡动画 (Scale 0 -> 1)
- *
- * PRD 规格:
- * - LOADING: 旧模型缩小消失 (Scale -> 0)
- * - SUCCESS: 新模型放大出现 (Scale -> 1)
+ * 带动画的模型组件 (保留兼容性)
  */
-export const AnimatedModel: React.FC<
-  ModelProps & {
-    /** 是否显示 */
-    visible?: boolean;
-    /** 动画持续时间 (秒) */
-    animationDuration?: number;
-  }
-> = ({
-  url,
-  scale = 1,
-  position = [0, 0, 0],
-  onLoad,
-  onError,
-  visible = true,
-  animationDuration = 0.4,
-}) => {
-  const groupRef = useRef<Group>(null);
-  const [currentScale, setCurrentScale] = useState(0);
-  const targetScaleRef = useRef(visible ? 1 : 0);
-
-  // 使用 useGLTF 加载模型
-  const { scene } = useGLTF(url, true, true, (loader) => {
-    loader.manager.onError = (errorUrl) => {
-      onError?.(new Error(`Failed to load: ${errorUrl}`));
-    };
-  });
-
-  // 更新目标缩放
-  useEffect(() => {
-    targetScaleRef.current = visible ? 1 : 0;
-  }, [visible]);
-
-  // 初始化模型
-  useEffect(() => {
-    if (scene) {
-      // 计算模型边界框并居中
-      const box = new THREE.Box3().setFromObject(scene);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-
-      // 将模型居中
-      scene.position.sub(center);
-
-      // 根据模型大小自动调整缩放
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const targetSize = 2;
-      const autoScale = targetSize / maxDim;
-
-      if (groupRef.current) {
-        // 存储自动缩放值
-        groupRef.current.userData.autoScale = autoScale * scale;
-      }
-
-      onLoad?.();
-    }
-  }, [scene, scale, onLoad]);
-
-  // 动画帧 - 平滑缩放过渡
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      const autoScale = groupRef.current.userData.autoScale || scale;
-      const target = targetScaleRef.current * autoScale;
-      const speed = 1 / animationDuration;
-
-      // 线性插值
-      const newScale = THREE.MathUtils.lerp(currentScale, target, Math.min(delta * speed * 5, 1));
-
-      if (Math.abs(newScale - currentScale) > 0.001) {
-        setCurrentScale(newScale);
-        groupRef.current.scale.setScalar(Math.max(newScale, 0.001)); // 防止 scale 为 0
-      }
-    }
-  });
-
-  return (
-    <group ref={groupRef} position={position}>
-      <primitive object={scene.clone()} />
-    </group>
-  );
-};
+export const AnimatedModel = Model;
 
 /**
  * 预加载模型
- * 在组件渲染前预加载模型以提升性能
- *
- * @param url - GLB 模型 URL
  */
 export function preloadModel(url: string) {
   if (url) {
-    useGLTF.preload(url);
+    fetchModelAsBlob(url).then((blobUrl) => {
+      useGLTF.preload(blobUrl);
+    });
   }
 }

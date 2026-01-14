@@ -16,9 +16,8 @@ import { HudOverlay } from '~/components/ui/hud-decorations';
 import { InsightPanel, SourcesPanel, VoidInsightPanel } from '~/components/ui/insight-panel';
 import { LanguageSwitcher } from '~/components/ui/language-switcher';
 import { LoadingScreen } from '~/components/ui/loading-screen';
+import { useDailyWorldByDate } from '~/hooks/use-daily-world';
 import { useDateNavigationKeys, useEscapeKey } from '~/hooks/use-keyboard';
-import { getDailyWorldByDate } from '~/lib/api';
-import type { NormalizedDailyWorld } from '~/types/api';
 
 type Status = 'LOADING' | 'SUCCESS' | 'VOID';
 
@@ -139,9 +138,6 @@ export default function DateRoute() {
   const dateParam = params.date as string;
 
   // 状态
-  const [data, setData] = useState<NormalizedDailyWorld | null>(null);
-  const [status, setStatus] = useState<Status>('LOADING');
-  const [error, setError] = useState<Error | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // 解析日期
@@ -153,6 +149,19 @@ export default function DateRoute() {
   const isToday = useMemo(() => checkIsToday(currentDate), [currentDate]);
   const dateStr = useMemo(() => formatDate(currentDate), [currentDate]);
 
+  // 验证日期格式
+  const isValidDate = useMemo(() => parseDate(dateParam) !== null, [dateParam]);
+
+  // 使用 hook 获取数据
+  const { data, loading, error } = useDailyWorldByDate(isValidDate && !isToday ? dateStr : '');
+
+  // 如果是今天，重定向到首页
+  useEffect(() => {
+    if (isToday) {
+      navigate('/', { replace: true });
+    }
+  }, [isToday, navigate]);
+
   // 导航函数
   const goToPrev = () => {
     const prevDate = addDays(currentDate, -1);
@@ -163,7 +172,6 @@ export default function DateRoute() {
     if (!isToday) {
       const nextDate = addDays(currentDate, 1);
       const nextDateStr = formatDate(nextDate);
-      // 如果下一天是今天，跳转到首页
       if (checkIsToday(nextDate)) {
         navigate('/');
       } else {
@@ -172,59 +180,16 @@ export default function DateRoute() {
     }
   };
 
-  // 获取数据
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchData = async () => {
-      setStatus('LOADING');
-      setError(null);
-
-      try {
-        // 如果是今天，重定向到首页
-        if (isToday) {
-          navigate('/', { replace: true });
-          return;
-        }
-
-        const result = await getDailyWorldByDate(dateStr);
-        if (isMounted) {
-          setData(result);
-          setStatus('SUCCESS');
-        }
-      } catch (err) {
-        if (isMounted) {
-          const errorObj = err instanceof Error ? err : new Error(t('error.unknown'));
-          setError(errorObj);
-          setData(null);
-          setStatus('VOID');
-        }
-      }
-    };
-
-    // 验证日期格式
-    if (!parseDate(dateParam)) {
-      setError(new Error(t('error.invalidDate')));
-      setStatus('VOID');
-      return;
-    }
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [dateStr, dateParam, isToday, navigate, t]);
-
   // 键盘快捷键
   useDateNavigationKeys(goToPrev, goToNext, !isDetailOpen);
   useEscapeKey(() => setIsDetailOpen(false), isDetailOpen);
 
   // 派生状态
+  const status: Status = !isValidDate || error ? 'VOID' : loading ? 'LOADING' : 'SUCCESS';
+  const displayError = !isValidDate ? new Error(t('error.invalidDate')) : error;
   const isLoading = status === 'LOADING';
   const isVoid = status === 'VOID';
-  const isSuccess = status === 'SUCCESS';
-  const showContent = isSuccess && data;
+  const showContent = status === 'SUCCESS' && data;
 
   return (
     <main className="hud-vignette min-h-screen">
@@ -245,7 +210,7 @@ export default function DateRoute() {
         <>
           <FullscreenVoidScene />
           <HudOverlay />
-          <VoidInsightPanel error={error} dateStr={dateStr} />
+          <VoidInsightPanel error={displayError} dateStr={dateStr} />
         </>
       )}
 

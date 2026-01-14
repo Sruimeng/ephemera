@@ -71,5 +71,19 @@
     "target": "目标",
     "reason": "原因",
     "status": "状态: 数据不可用"
+  },
+  "hud": {
+    "filter": "滤镜"
+  },
+  "filter": {
+    "default": "默认",
+    "blueprint": "工程模式",
+    "halftone": "旧时光",
+    "ascii": "黑客",
+    "pixel": "复古像素",
+    "sketch": "艺术馆",
+    "glitch": "赛博故障",
+    "crystal": "水晶展台",
+    "claymation": "粘土动画"
   }
 }

@@ -3,4 +3,5 @@
  */
 
 export * from './api';
+export * from './api-v5';
 export * from './store';

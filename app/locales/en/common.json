@@ -71,5 +71,19 @@
     "target": "Target",
     "reason": "Reason",
     "status": "Status: DATA_UNAVAILABLE"
+  },
+  "hud": {
+    "filter": "FILTER"
+  },
+  "filter": {
+    "default": "Default",
+    "blueprint": "Blueprint",
+    "halftone": "Halftone",
+    "ascii": "ASCII",
+    "pixel": "Pixel",
+    "sketch": "Sketch",
+    "glitch": "Glitch",
+    "crystal": "Crystal",
+    "claymation": "Claymation"
   }
 }

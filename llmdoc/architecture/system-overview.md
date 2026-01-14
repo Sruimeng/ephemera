@@ -132,22 +132,95 @@ FLOW: 3D_RENDER_FLOW
 root.tsx
     │
     ▼
-<BackgroundScene /> (Client Component)
+<StyleFilterProvider>
+    │
+    ▼
+<Scene /> (Client Component)
     │
     ├─► 'use client' 指令
     │
     ▼
 <Canvas> (R3F)
     │
-    ├─► <ambientLight />
-    ├─► <Stars /> (drei)
-    ├─► <OrbitControls /> (可选)
+    ├─► <ConditionalBackground />
+    │       │
+    │       ├─► filter === 'blueprint' → <BlueprintGridBackground />
+    │       ├─► filter === 'ascii' → <MatrixRainBackground />
+    │       ├─► filter === 'halftone' → <NewspaperBackground />
+    │       ├─► filter === 'sketch' → <SketchbookBackground />
+    │       └─► default → <Stars />
+    │
+    ├─► <Environment /> (HDR)
+    ├─► <spotLight /> + <pointLight /> (Dramatic Lighting)
+    ├─► <Model /> (GLB with material replacement)
+    ├─► <ContactShadows />
+    ├─► <OrbitControls />
+    ├─► <PostProcessingComposer />
     │
     ▼
 Three.js WebGL Renderer
     │
     ▼
 GPU Rendering
+```
+
+### 3.4 Post-Processing Filter System
+
+```
+FLOW: FILTER_SYSTEM
+
+StyleFilterProvider (Context)
+    │
+    ├─► filter: StyleFilter
+    ├─► config: PostProcessingConfig
+    ├─► systemState: SystemState
+    ├─► isMobile: boolean
+    ├─► gpuTier: number
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Filter Categories                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  POST (Effects Only)          MATERIAL (Shader Replace)    │
+│  ├─ default                   ├─ pixel                     │
+│  ├─ halftone                  ├─ crystal                   │
+│  ├─ ascii                     └─ claymation                │
+│  └─ glitch                                                 │
+│                                                             │
+│  HYBRID (Material + Effects)                               │
+│  ├─ blueprint                                              │
+│  └─ sketch                                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+    │
+    ▼
+Model Component
+    │
+    ├─► useStyleFilter() → get current filter
+    ├─► traverse(scene) → replace materials
+    │       │
+    │       ├─► 'blueprint' → <BlueprintMaterial />
+    │       ├─► 'halftone' → <HalftoneMaterial />
+    │       ├─► 'sketch' → <SketchMaterial />
+    │       ├─► 'glitch' → <GlitchMaterial />
+    │       ├─► 'crystal' → <CrystalMaterial />
+    │       ├─► 'claymation' → <ClaymationMaterial />
+    │       ├─► 'pixel' → <PixelMaterial />
+    │       └─► default → original material
+    │
+    ▼
+PostProcessingComposer
+    │
+    ├─► <EffectComposer>
+    │       ├─► <Vignette />
+    │       ├─► <Bloom />
+    │       ├─► <ChromaticAberration />
+    │       ├─► <Noise />
+    │       └─► <ScanlineEffect /> (custom)
+    │
+    ▼
+Final Frame
 ```
 
 ## 4. 应用状态机 (State Machine)
@@ -280,9 +353,39 @@ interface ApiError {
 职责: 可复用 UI 组件
 
 子目录:
-  - ui/        # 基础 UI (Shadcn)
-  - business/  # 业务组件 (NewsCard, DailySummary)
-  - canvas/    # 3D 场景组件 (BackgroundScene, ModelViewer)
+  - ui/              # 基础 UI (Shadcn, FilterSelector)
+  - business/        # 业务组件 (NewsCard, DailySummary)
+  - canvas/          # 3D 场景组件 (Scene, Model, VoidSphere)
+  - post-processing/ # 滤镜系统 (Materials, Effects, Backgrounds)
+```
+
+### 6.2.1 Post-Processing Module
+
+```
+位置: app/components/post-processing/
+职责: 3D 场景视觉滤镜系统
+
+结构:
+  - types.ts         # StyleFilter, PostProcessingConfig
+  - constants.ts     # STYLE_FILTERS, DEFAULT_POST_PROCESSING
+  - context.tsx      # StyleFilterProvider, useStyleFilter
+  - composer.tsx     # PostProcessingComposer (EffectComposer wrapper)
+  - effects/         # 后处理效果 (Scanline, BlueprintEdge, CyberGlitch)
+  - materials/       # 着色器材质 (Blueprint, Halftone, Sketch, etc.)
+  - backgrounds/     # 滤镜专属背景 (BlueprintGrid, MatrixRain, etc.)
+
+滤镜列表:
+  | ID         | Label    | Category | Performance |
+  |------------|----------|----------|-------------|
+  | default    | 默认     | post     | 1           |
+  | blueprint  | 工程模式 | hybrid   | 2           |
+  | halftone   | 旧时光   | post     | 1           |
+  | ascii      | 黑客     | post     | 2           |
+  | pixel      | 复古像素 | material | 2           |
+  | sketch     | 艺术馆   | hybrid   | 2           |
+  | glitch     | 赛博故障 | post     | 2           |
+  | crystal    | 水晶展台 | material | 3           |
+  | claymation | 粘土动画 | material | 2           |
 ```
 
 ### 6.3 Hooks (钩子)
@@ -315,8 +418,10 @@ interface ApiError {
 职责: 核心工具函数
 
 关键文件:
-  - api.ts    # API 请求封装 (fetch wrapper)
-  - utils.ts  # 通用工具 (cn, formatters)
+  - api.ts         # Legacy API (v4, @deprecated)
+  - api-v5.ts      # API v5 Client (Context + Forge endpoints)
+  - api-adapter.ts # v5 -> NormalizedDailyWorld adapter
+  - utils.ts       # 通用工具 (cn, formatters)
 ```
 
 ### 6.6 Types (类型定义)
@@ -326,7 +431,9 @@ interface ApiError {
 职责: TypeScript 类型定义 (对应 Rust Struct)
 
 关键文件:
-  - api.d.ts  # API 响应类型
+  - api.d.ts    # Legacy API 响应类型 (DailyWorldData, NormalizedDailyWorld)
+  - api-v5.ts   # v5 API 类型 (DailyContext, ForgeTask, etc.)
+  - index.ts    # Barrel exports
 ```
 
 ## 7. 渲染策略

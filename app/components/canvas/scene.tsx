@@ -6,12 +6,19 @@
  * @see PRD V1.1 Section 3.3
  */
 
-import { ContactShadows, Environment, OrbitControls } from '@react-three/drei';
+import { ContactShadows, Environment, OrbitControls, Stars } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Bloom, EffectComposer, Noise } from '@react-three/postprocessing';
 import type React from 'react';
 import { Component, Suspense, type ReactNode } from 'react';
-import { FALLBACK_MODEL_URL } from '~/lib/api';
+import { FALLBACK_MODEL_URL } from '~/constants/meta/service';
+import {
+  BlueprintGridBackground,
+  MatrixRainBackground,
+  NewspaperBackground,
+  PostProcessingComposer,
+  SketchbookBackground,
+  useStyleFilter,
+} from '../post-processing';
 import { Model } from './model';
 import { VoidSphere } from './void-sphere';
 
@@ -64,16 +71,51 @@ class CanvasErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 /**
+ * 深空背景粒子
+ */
+function DeepSpaceBackground() {
+  return <Stars radius={100} depth={50} count={2000} factor={7} saturation={0} fade speed={0.1} />;
+}
+
+/**
+ * 条件背景 - 根据滤镜切换
+ */
+function ConditionalBackground() {
+  const { filter } = useStyleFilter();
+
+  if (filter === 'blueprint') {
+    return <BlueprintGridBackground />;
+  }
+
+  if (filter === 'ascii') {
+    return <MatrixRainBackground />;
+  }
+
+  if (filter === 'halftone') {
+    return <NewspaperBackground />;
+  }
+
+  if (filter === 'sketch') {
+    return <SketchbookBackground />;
+  }
+
+  return <DeepSpaceBackground />;
+}
+
+/**
  * 共享的 Canvas 配置和光照
  */
 function SceneEnvironment({ children }: { children: ReactNode }) {
   return (
     <>
+      {/* 条件背景 - 根据滤镜切换 */}
+      <ConditionalBackground />
+
       {/* 深空雾气 */}
       <fog attach="fog" args={['#404040', 10, 50]} />
 
-      {/* 环境反射 */}
-      <Environment preset="city" environmentIntensity={0.5} />
+      {/* 环境反射 - 使用本地 HDR */}
+      <Environment files="/static/hdr/studio.hdr" environmentIntensity={0.5} />
 
       {/* 戏剧性光照系统 */}
       {/* 主光源 - 从上方照射 */}
@@ -121,14 +163,8 @@ function SceneEnvironment({ children }: { children: ReactNode }) {
         target={[0, 0.3, 0]}
       />
 
-      {/* 后处理效果 - 电影级质感 */}
-      <EffectComposer enableNormalPass={false}>
-        {/* Bloom 辉光 - 让高光溢出 */}
-        <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.9} intensity={1.2} mipmapBlur />
-        {/* Noise 噪点 - 模拟摄像机 ISO */}
-        <Noise opacity={0.03} />
-        {/* 注意: Vignette 暗角由 CSS .hud-vignette::after 处理，避免与 WebGL 效果重叠 */}
-      </EffectComposer>
+      {/* 后处理效果 - 风格滤镜系统 */}
+      <PostProcessingComposer />
     </>
   );
 }

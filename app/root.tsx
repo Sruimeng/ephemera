@@ -3,6 +3,7 @@ import 'virtual:uno.css';
 import type { Route } from './+types/root';
 import { i18nServer } from './.server/i18n.server';
 import { Canonical, DefaultErrorBoundary } from './components';
+import { StyleFilterProvider } from './components/post-processing';
 import { I18nConfig } from './locales';
 import './root.css';
 
@@ -38,7 +39,9 @@ export default function App() {
         <Canonical />
       </head>
       <body className="select-none">
-        <Outlet />
+        <StyleFilterProvider>
+          <Outlet />
+        </StyleFilterProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

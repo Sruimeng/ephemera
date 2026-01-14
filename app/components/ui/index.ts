@@ -5,6 +5,7 @@
 
 export * from './date-pill';
 export * from './detail-sheet';
+export * from './filter-selector';
 export * from './glass-card';
 export * from './header';
 export * from './hud-decorations';

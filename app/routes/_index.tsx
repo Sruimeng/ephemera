@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 import { FullscreenScene, FullscreenVoidScene } from '~/components/canvas/scene';
 import { DateNavigation } from '~/components/ui/date-navigation';
 import { DetailSheet } from '~/components/ui/detail-sheet';
+import { FilterSelector } from '~/components/ui/filter-selector';
 import { HudOverlay } from '~/components/ui/hud-decorations';
 import { InsightPanel, SourcesPanel, VoidInsightPanel } from '~/components/ui/insight-panel';
 import { LanguageSwitcher } from '~/components/ui/language-switcher';
@@ -174,6 +175,11 @@ export default function Index() {
 
           {/* HUD 装饰层 */}
           <HudOverlay />
+
+          {/* 滤镜选择器 - 左侧偏上 */}
+          <div className="pointer-events-auto fixed left-4 top-1/3 z-40">
+            <FilterSelector />
+          </div>
 
           {/* Totem 独有 UI: 面板 */}
           {!isDetailOpen && (
