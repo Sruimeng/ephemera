@@ -10,7 +10,6 @@ import { Environment, OrbitControls, Stars } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import type React from 'react';
 import { Component, Suspense, type ReactNode } from 'react';
-import { FALLBACK_MODEL_URL } from '~/constants/meta/service';
 import {
   BlueprintGridBackground,
   MatrixRainBackground,
@@ -169,8 +168,6 @@ function SceneEnvironment({ children }: { children: ReactNode }) {
  * - OrbitControls: 限制垂直角度, 自动旋转
  */
 export const Scene: React.FC<SceneProps> = ({ modelUrl, onLoad, onError, className }) => {
-  const effectiveUrl = modelUrl || FALLBACK_MODEL_URL;
-
   const renderCanvas = (url: string) => (
     <Canvas
       shadows
@@ -190,7 +187,7 @@ export const Scene: React.FC<SceneProps> = ({ modelUrl, onLoad, onError, classNa
       <SceneEnvironment>
         <Suspense fallback={null}>
           <group position={[0, 0.3, 0]}>
-            <Model url={url} onLoad={onLoad} onError={onError} />
+            {url && <Model url={url} onLoad={onLoad} onError={onError} />}
           </group>
         </Suspense>
       </SceneEnvironment>
@@ -199,8 +196,8 @@ export const Scene: React.FC<SceneProps> = ({ modelUrl, onLoad, onError, classNa
 
   return (
     <div className={`h-full w-full ${className || ''}`}>
-      <CanvasErrorBoundary onError={onError} fallback={renderCanvas(FALLBACK_MODEL_URL)}>
-        {renderCanvas(effectiveUrl)}
+      <CanvasErrorBoundary onError={onError} fallback={renderCanvas('')}>
+        {renderCanvas(modelUrl)}
       </CanvasErrorBoundary>
     </div>
   );

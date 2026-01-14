@@ -16,21 +16,20 @@ interface ApiResponse {
 }
 
 /**
- * @deprecated Use FALLBACK_MODEL_URL from constants/meta/service.ts
- */
-export const FALLBACK_MODEL_URL =
-  'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb';
-
-/**
  * @deprecated Use processModelUrl from constants/meta/service.ts
  */
 function processModelUrl(url: string): string {
-  if (!url) return FALLBACK_MODEL_URL;
+  if (!url) return '';
 
   const httpsUrl = url.replace(/^http:/, 'https:');
 
-  if (httpsUrl.includes('tripo3d.com')) {
-    return `${API_BASE}/api/proxy-model?url=${encodeURIComponent(httpsUrl)}`;
+  try {
+    const hostname = new URL(httpsUrl).hostname;
+    if (hostname.endsWith('tripo3d.com')) {
+      return `${API_BASE}/api/proxy-model?url=${encodeURIComponent(httpsUrl)}`;
+    }
+  } catch {
+    // Invalid URL
   }
 
   return httpsUrl;
