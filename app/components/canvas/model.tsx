@@ -2,7 +2,7 @@
 
 /**
  * GLB 模型加载组件
- * 支持滤镜材质替换
+ * 支持滤镜材质替换 + 加载占位
  */
 
 import { useGLTF } from '@react-three/drei';
@@ -22,6 +22,7 @@ import {
   SketchOutlineMaterial,
 } from '~/components/post-processing/materials';
 import { fetchModelAsBlob } from '~/constants/meta/service';
+import { ModelLoadingPlaceholder } from './void-sphere';
 
 interface ModelProps {
   url: string;
@@ -140,9 +141,11 @@ function ModelContent({ url, onLoad }: { url: string; onLoad?: () => void }) {
 function ModelLoader({ url, onLoad, onError }: ModelProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let revoke: string | null = null;
+    setIsLoading(true);
 
     fetchModelAsBlob(url)
       .then((result) => {
@@ -152,6 +155,7 @@ function ModelLoader({ url, onLoad, onError }: ModelProps) {
       .catch((err) => {
         setError(err);
         onError?.(err);
+        setIsLoading(false);
       });
 
     return () => {
@@ -159,13 +163,25 @@ function ModelLoader({ url, onLoad, onError }: ModelProps) {
     };
   }, [url, onError]);
 
+  const handleModelLoad = () => {
+    setIsLoading(false);
+    onLoad?.();
+  };
+
   if (error) return null;
-  if (!blobUrl) return null;
 
   return (
-    <Suspense fallback={null}>
-      <ModelContent url={blobUrl} onLoad={onLoad} />
-    </Suspense>
+    <>
+      {/* 加载占位 - 模型加载完成前显示 */}
+      {isLoading && <ModelLoadingPlaceholder />}
+
+      {/* 模型内容 */}
+      {blobUrl && (
+        <Suspense fallback={<ModelLoadingPlaceholder />}>
+          <ModelContent url={blobUrl} onLoad={handleModelLoad} />
+        </Suspense>
+      )}
+    </>
   );
 }
 

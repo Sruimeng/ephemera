@@ -4,3 +4,4 @@
 
 export * from './model';
 export * from './scene';
+export * from './void-sphere';

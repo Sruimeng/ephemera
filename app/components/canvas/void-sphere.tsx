@@ -103,3 +103,50 @@ export function SimpleVoidSphere({ color = '#EF4444', scale = 1.5 }: VoidSphereP
     </mesh>
   );
 }
+
+/**
+ * 模型加载占位组件
+ * 显示旋转的线框立方体作为加载指示
+ */
+export function ModelLoadingPlaceholder() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const outerRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta * 0.5;
+      meshRef.current.rotation.x += delta * 0.3;
+    }
+    if (outerRef.current) {
+      outerRef.current.rotation.y -= delta * 0.2;
+      // 脉冲效果
+      const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.1 + 1;
+      outerRef.current.scale.setScalar(pulse);
+    }
+  });
+
+  return (
+    <group position={[0, 0.3, 0]}>
+      {/* 外层八面体 */}
+      <mesh ref={outerRef}>
+        <octahedronGeometry args={[1.2, 0]} />
+        <meshBasicMaterial color="#3B82F6" wireframe transparent opacity={0.3} />
+      </mesh>
+
+      {/* 内层立方体 */}
+      <mesh ref={meshRef}>
+        <boxGeometry args={[0.8, 0.8, 0.8]} />
+        <meshBasicMaterial color="#3B82F6" wireframe transparent opacity={0.6} />
+      </mesh>
+
+      {/* 中心点 */}
+      <mesh scale={0.08}>
+        <sphereGeometry args={[1, 8, 8]} />
+        <meshBasicMaterial color="#3B82F6" transparent opacity={0.8} />
+      </mesh>
+
+      {/* 蓝色点光源 */}
+      <pointLight color="#3B82F6" intensity={1.5} distance={4} decay={2} />
+    </group>
+  );
+}
