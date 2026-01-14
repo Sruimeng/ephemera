@@ -240,7 +240,6 @@ PSEUDOCODE: Scene({ modelUrl })
        b. <Environment preset="city" />
        c. <Suspense fallback={null}>
             <Model url={modelUrl} />
-            <ContactShadows {...config} />
           </Suspense>
        d. <OrbitControls {...config} />
 
@@ -402,7 +401,6 @@ CHECKLIST:
   [ ] API 数据正确获取并规范化
   [ ] GLB 模型正确加载和渲染
   [ ] OrbitControls 限制垂直旋转角度
-  [ ] ContactShadows 正确显示
   [ ] 状态机正确切换 (Loading → Totem ↔ Detail)
   [ ] 玻璃效果正确应用
   [ ] 响应式布局 (Mobile + Desktop)
