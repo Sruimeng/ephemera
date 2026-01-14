@@ -1,8 +1,0 @@
-{
-  "$schema": "https://json-schema.zeabur.com/project.json",
-  "build": {
-    "install_command": "pnpm install",
-    "build_command": "pnpm build"
-  },
-  "start_command": "pnpm start"
-}
