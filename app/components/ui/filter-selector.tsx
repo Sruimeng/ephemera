@@ -33,7 +33,7 @@ function FilterIcon({ filterId }: { filterId: StyleFilter }) {
   switch (filterId) {
     case 'default':
       return (
-        <div className={`${baseClass} bg-gradient-to-br from-neutral-700 to-neutral-900`}>
+        <div className={`${baseClass} from-neutral-700 to-neutral-900 bg-gradient-to-br`}>
           <div className="h-full w-full flex items-center justify-center">
             <div className="h-2.5 w-2.5 rounded-full bg-[#3B82F6]/60" />
           </div>
@@ -71,7 +71,7 @@ function FilterIcon({ filterId }: { filterId: StyleFilter }) {
       );
     case 'pixel':
       return (
-        <div className={`${baseClass} bg-neutral-900 overflow-hidden`}>
+        <div className={`${baseClass} overflow-hidden bg-neutral-900`}>
           <div className="grid grid-cols-3 grid-rows-3 h-full w-full">
             {[...Array(9)].map((_, i) => (
               <div
@@ -103,7 +103,7 @@ function FilterIcon({ filterId }: { filterId: StyleFilter }) {
       );
     case 'glitch':
       return (
-        <div className={`${baseClass} bg-black overflow-hidden`}>
+        <div className={`${baseClass} overflow-hidden bg-black`}>
           <div className="h-full w-full flex flex-col justify-center gap-0.5">
             <div className="h-0.5 translate-x-0.5 bg-red-500/70" />
             <div className="h-0.5 bg-cyan-500/70 -translate-x-0.5" />
@@ -113,7 +113,7 @@ function FilterIcon({ filterId }: { filterId: StyleFilter }) {
       );
     case 'crystal':
       return (
-        <div className={`${baseClass} bg-gradient-to-br from-purple-900/50 to-blue-900/50`}>
+        <div className={`${baseClass} from-purple-900/50 to-blue-900/50 bg-gradient-to-br`}>
           <div className="h-full w-full flex items-center justify-center">
             <div
               className="h-3 w-2.5 from-white/40 to-purple-400/30 bg-gradient-to-b"
@@ -124,7 +124,7 @@ function FilterIcon({ filterId }: { filterId: StyleFilter }) {
       );
     case 'claymation':
       return (
-        <div className={`${baseClass} bg-gradient-to-br from-orange-200 to-amber-100`}>
+        <div className={`${baseClass} from-orange-200 to-amber-100 bg-gradient-to-br`}>
           <div className="h-full w-full flex items-center justify-center">
             <div className="h-2.5 w-2.5 rounded-full from-orange-400 to-orange-600 bg-gradient-to-br" />
           </div>
@@ -161,6 +161,11 @@ function MobileFilterSelector() {
       const velocity = info.velocity.y;
       const offset = info.offset.y;
 
+      // 如果是点击操作（位移很小），不进行拖拽结束的处理，交给 onTap 处理
+      if (Math.abs(offset) < 5 && Math.abs(velocity) < 5) {
+        return;
+      }
+
       let newIndex = activeIndex;
 
       if (Math.abs(velocity) > 200) {
@@ -180,6 +185,19 @@ function MobileFilterSelector() {
       });
     },
     [activeIndex, setFilter, y],
+  );
+
+  const handleItemTap = useCallback(
+    (index: number) => {
+      setActiveIndex(index);
+      setFilter(STYLE_FILTERS[index].id);
+      animate(y, -index * ITEM_HEIGHT, {
+        type: 'spring',
+        stiffness: 300,
+        damping: 30,
+      });
+    },
+    [setFilter, y],
   );
 
   const currentLabel = t(FILTER_I18N_KEYS[STYLE_FILTERS[activeIndex]?.id ?? 'default']);
@@ -207,9 +225,10 @@ function MobileFilterSelector() {
                 key={f.id}
                 className="flex items-center justify-center"
                 style={{ height: ITEM_HEIGHT }}
+                onTap={() => handleItemTap(index)}
               >
                 <div
-                  className={`w-6 h-6 rounded-sm overflow-hidden transition-all duration-200 ${
+                  className={`h-6 w-6 overflow-hidden rounded-sm transition-all duration-200 ${
                     isActive ? 'ring-1 ring-[#3B82F6] scale-110' : 'opacity-50 scale-90'
                   }`}
                 >
@@ -250,10 +269,7 @@ function DesktopFilterSelector() {
             onClick={() => setFilter(f.id)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className={`
-              p-0.5 rounded transition-all duration-150
-              ${isActive ? 'ring-1 ring-[#3B82F6]/60' : 'opacity-60 hover:opacity-100'}
-            `}
+            className={` rounded p-0.5 transition-all duration-150 ${isActive ? 'ring-1 ring-[#3B82F6]/60' : 'opacity-60 hover:opacity-100'}  `}
           >
             <div className="h-5 w-5 overflow-hidden rounded-sm">
               <FilterIcon filterId={f.id} />
