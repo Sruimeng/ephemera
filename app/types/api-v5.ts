@@ -96,7 +96,9 @@ export interface ForgeCreateResponse {
 export interface ForgeStatusResponse {
   task_id: string;
   status: ForgeStatus;
-  model_url: string | null;
+  tripo_url: string | null;
+  alist_url: string | null;
+  selected_url: string | null;
   error_message: string | null;
   progress_percent: number;
 }
@@ -104,7 +106,9 @@ export interface ForgeStatusResponse {
 export interface ForgeAsset {
   task_id: string;
   status: ForgeStatus;
-  model_url: string | null;
+  tripo_url: string | null;
+  alist_url: string | null;
+  selected_url: string | null;
 }
 
 export interface ForgeAssetsResponse {

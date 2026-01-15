@@ -83,7 +83,9 @@ export function useForge(): UseForgeResult {
         setTask({
           task_id: response.task_id,
           status: response.status,
-          model_url: null,
+          tripo_url: null,
+          alist_url: null,
+          selected_url: null,
           error_message: null,
           progress_percent: 0,
         });

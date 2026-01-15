@@ -5,7 +5,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { normalizeDailyContext } from '~/lib/api-adapter';
-import { getDailyContext, getForgeAssets, NotFoundError } from '~/lib/api-v5';
+import {
+  fetchModelWithFallback,
+  getDailyContext,
+  getForgeAssets,
+  NotFoundError,
+} from '~/lib/api-v5';
 import type { NormalizedDailyWorld } from '~/types/api';
 
 export type DailyWorldStatus = 'LOADING' | 'SUCCESS' | 'VOID';
@@ -71,9 +76,11 @@ export function useDailyWorldStateMachine(): UseDailyWorldStateMachine {
         let modelUrl = '';
         try {
           const assets = await getForgeAssets(ctx.context_id);
-          const completed = assets.assets.find((a) => a.status === 'completed' && a.model_url);
-          if (completed?.model_url) {
-            modelUrl = completed.model_url;
+          const completed = assets.assets.find(
+            (a) => a.status === 'completed' && (a.tripo_url || a.alist_url),
+          );
+          if (completed) {
+            modelUrl = await fetchModelWithFallback(completed.alist_url, completed.tripo_url);
           }
         } catch {
           // No assets yet, that's fine
@@ -156,9 +163,11 @@ export function useDailyWorld(): UseDailyWorldResult {
         let modelUrl = '';
         try {
           const assets = await getForgeAssets(ctx.context_id);
-          const completed = assets.assets.find((a) => a.status === 'completed' && a.model_url);
-          if (completed?.model_url) {
-            modelUrl = completed.model_url;
+          const completed = assets.assets.find(
+            (a) => a.status === 'completed' && (a.tripo_url || a.alist_url),
+          );
+          if (completed) {
+            modelUrl = await fetchModelWithFallback(completed.alist_url, completed.tripo_url);
           }
         } catch {
           // No assets
@@ -209,9 +218,11 @@ export function useDailyWorldByDate(date: string): UseDailyWorldResult {
         let modelUrl = '';
         try {
           const assets = await getForgeAssets(ctx.context_id);
-          const completed = assets.assets.find((a) => a.status === 'completed' && a.model_url);
-          if (completed?.model_url) {
-            modelUrl = completed.model_url;
+          const completed = assets.assets.find(
+            (a) => a.status === 'completed' && (a.tripo_url || a.alist_url),
+          );
+          if (completed) {
+            modelUrl = await fetchModelWithFallback(completed.alist_url, completed.tripo_url);
           }
         } catch {
           // No assets
@@ -261,9 +272,11 @@ export function useDailyWorldWithRefetch() {
       let modelUrl = '';
       try {
         const assets = await getForgeAssets(ctx.context_id);
-        const completed = assets.assets.find((a) => a.status === 'completed' && a.model_url);
-        if (completed?.model_url) {
-          modelUrl = completed.model_url;
+        const completed = assets.assets.find(
+          (a) => a.status === 'completed' && (a.tripo_url || a.alist_url),
+        );
+        if (completed) {
+          modelUrl = await fetchModelWithFallback(completed.alist_url, completed.tripo_url);
         }
       } catch {
         // No assets

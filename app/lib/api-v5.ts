@@ -169,3 +169,36 @@ export async function getForgeAssets(contextId: string): Promise<ForgeAssetsResp
 }
 
 export { ContextApiError, ForgeApiError };
+
+/**
+ * Fetch model with fallback strategy
+ * 1. Try alist_url first (China CDN)
+ * 2. If fails, fallback to tripo_url via backend proxy
+ */
+export async function fetchModelWithFallback(
+  alistUrl: string | null,
+  tripoUrl: string | null,
+): Promise<string> {
+  // No URLs available
+  if (!alistUrl && !tripoUrl) return '';
+
+  // Try alist first
+  if (alistUrl) {
+    try {
+      const res = await fetch(alistUrl, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(5000),
+      });
+      if (res.ok) return alistUrl;
+    } catch {
+      // alist failed, try fallback
+    }
+  }
+
+  // Fallback to tripo via backend proxy
+  if (tripoUrl) {
+    return `${API_V5_BASE}${API_ENDPOINTS.PROXY_MODEL}?url=${encodeURIComponent(tripoUrl)}`;
+  }
+
+  return alistUrl || '';
+}
