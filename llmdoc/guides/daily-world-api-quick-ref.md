@@ -12,7 +12,7 @@ related_ids:
 # 🌍 Daily World API 快速参考 (AI 可读)
 
 > **60s 读懂世界** - 获取每日世界观察报告的 API 接口  
-> **API Base URL**: `https://api.sruim.xin`
+> **API Base URL**: `https://reify-sdk.zeabur.internal`
 
 ## 1. 核心类型定义
 
@@ -67,7 +67,7 @@ interface HealthCheck {
 ### 调用示例
 
 ```bash
-curl https://api.sruim.xin/health
+curl https://reify-sdk.zeabur.internal/health
 ```
 
 ### 预期响应
@@ -110,7 +110,7 @@ interface DailyWorldResponse {
 #### 调用示例
 
 ```bash
-curl -X GET https://api.sruim.xin/api/daily-world \
+curl -X GET https://reify-sdk.zeabur.internal/api/daily-world \
   -H "Content-Type: application/json"
 ```
 
@@ -161,7 +161,7 @@ interface DailyWorldByDateRequest {
 #### 调用示例
 
 ```bash
-curl -X GET https://api.sruim.xin/api/daily-world/2026-01-06 \
+curl -X GET https://reify-sdk.zeabur.internal/api/daily-world/2026-01-06 \
   -H "Content-Type: application/json"
 ```
 
@@ -183,7 +183,7 @@ curl -X GET https://api.sruim.xin/api/daily-world/2026-01-06 \
 ### 4.1 API Hook (app/hooks/useDailyWorld.ts)
 
 ```typescript
-const API_BASE = 'https://api.sruim.xin';
+const API_BASE = 'https://reify-sdk.zeabur.internal';
 
 /**
  * 规范化 API 响应
@@ -355,7 +355,7 @@ TRIPO_API_KEY=tsz-your-tripo-api-key
 
 ```bash
 # .env.production
-VITE_API_BASE_URL=https://api.sruim.xin
+VITE_API_BASE_URL=https://reify-sdk.zeabur.internal
 ```
 
 ---

@@ -44,7 +44,7 @@
     "title": "EPHEMERA",
     "subtitle": "ЦИФРОВАЯ АРТ-ГАЛЕРЕЯ",
     "bootInit": "[SYS] Инициализация Ephemera V2...",
-    "bootConnect": "[NET] Подключение к api.sruim.xin...",
+    "bootConnect": "[NET] Подключение к reify-sdk.zeabur.internal...",
     "bootFetch": "[DAT] Получение ежедневного духа времени...",
     "bootModel": "[3D] Загрузка GLB модели...",
     "bootPost": "[GFX] Подготовка постобработки...",

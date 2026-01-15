@@ -44,7 +44,7 @@
     "title": "EPHEMERA",
     "subtitle": "数字艺术画廊",
     "bootInit": "[系统] 正在初始化 Ephemera V2...",
-    "bootConnect": "[网络] 正在连接 api.sruim.xin...",
+    "bootConnect": "[网络] 正在连接 reify-sdk.zeabur.internal...",
     "bootFetch": "[数据] 正在获取每日时代精神...",
     "bootModel": "[3D] 正在加载 GLB 模型...",
     "bootPost": "[图形] 正在准备后处理...",

@@ -9,8 +9,8 @@ related_ids: [llmdoc-index, tech-stack, shared-utilities]
 ## 1. Analysis
 
 **Context:**
-- Current: `api.sruim.xin/api/daily-world` (v4)
-- Target: `api.sruim.xin/api/context/*` + `api.sruim.xin/api/forge/*` (v5)
+- Current: `reify-sdk.zeabur.internal/api/daily-world` (v4)
+- Target: `reify-sdk.zeabur.internal/api/context/*` + `reify-sdk.zeabur.internal/api/forge/*` (v5)
 - Breaking: New response shapes, new endpoints, auth header required
 
 **Constitution:**
@@ -115,7 +115,7 @@ type AnyContext = DailyContext | HistoryContext | FossilContext
 
 **Block 2: Config** [DONE]
 1. ~~Update `app/constants/meta/service.ts`:~~
-   - ~~Add `API_V5_BASE = 'https://api.sruim.xin'`~~
+   - ~~Add `API_V5_BASE = 'https://reify-sdk.zeabur.internal'`~~
    - ~~Add `APP_ID = '204bb605-dd38-4c3b-90b5-d1055310051b'`~~
    - ~~Add `FALLBACK_MODEL_URL`~~
    - ~~Remove `processModelUrl()` - CF Worker handles proxy~~

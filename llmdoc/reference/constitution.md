@@ -80,7 +80,7 @@ FEATURES:
 | **反向代理** | Caddy (自动 HTTPS) |
 | **容器化** | Docker (Standalone 模式) |
 | **镜像仓库** | 阿里云 ACR |
-| **API 域名** | `https://api.sruim.xin` |
+| **API 域名** | `https://reify-sdk.zeabur.internal` |
 
 ## 3. 目录结构规范
 
@@ -204,7 +204,7 @@ const useConfigStore = create<ConfigStore>((set) => ({
 ```typescript
 // ✅ 正确：类型安全的 API 封装
 // app/lib/api.ts
-const API_BASE = 'https://api.sruim.xin';
+const API_BASE = 'https://reify-sdk.zeabur.internal';
 
 export async function getDailyNews(): Promise<DailyWorldData> {
   const res = await fetch(`${API_BASE}/api/daily-world`);

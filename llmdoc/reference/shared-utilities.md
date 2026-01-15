@@ -66,7 +66,7 @@ class NotFoundError extends Error
 ### Constants
 
 ```typescript
-API_BASE = 'https://api.sruim.xin'
+API_BASE = 'https://reify-sdk.zeabur.internal'
 FALLBACK_MODEL_URL = 'https://raw.githubusercontent.com/...'
 ```
 

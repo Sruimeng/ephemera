@@ -45,10 +45,10 @@ pnpm dev
 
 ```bash
 # .env.local (开发环境)
-VITE_API_BASE_URL=https://api.sruim.xin
+VITE_API_BASE_URL=https://reify-sdk.zeabur.internal
 
 # .env.production (生产环境)
-VITE_API_BASE_URL=https://api.sruim.xin
+VITE_API_BASE_URL=https://reify-sdk.zeabur.internal
 ```
 
 ---

@@ -44,7 +44,7 @@
     "title": "EPHEMERA",
     "subtitle": "디지털 아트 갤러리",
     "bootInit": "[SYS] Ephemera V2 초기화 중...",
-    "bootConnect": "[NET] api.sruim.xin에 연결 중...",
+    "bootConnect": "[NET] reify-sdk.zeabur.internal에 연결 중...",
     "bootFetch": "[DAT] 데일리 자이트가이스트 가져오는 중...",
     "bootModel": "[3D] GLB 모델 로딩 중...",
     "bootPost": "[GFX] 후처리 준비 중...",

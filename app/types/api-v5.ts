@@ -1,6 +1,6 @@
 /**
  * API v5 Types
- * @see https://api.sruim.xin/api/context/*
+ * @see https://reify-sdk.zeabur.internal/api/context/*
  */
 
 import type { NewsItem } from './api';
