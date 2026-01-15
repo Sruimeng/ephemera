@@ -44,7 +44,7 @@
     "title": "EPHEMERA",
     "subtitle": "デジタルアートギャラリー",
     "bootInit": "[SYS] Ephemera V2を初期化中...",
-    "bootConnect": "[NET] reify-sdk.zeabur.internalに接続中...",
+    "bootConnect": "[NET] reify-sdk.zeabur.internal:8080に接続中...",
     "bootFetch": "[DAT] デイリーツァイトガイストを取得中...",
     "bootModel": "[3D] GLBモデルを読み込み中...",
     "bootPost": "[GFX] ポストプロセスを準備中...",

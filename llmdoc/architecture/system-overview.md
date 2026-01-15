@@ -39,7 +39,7 @@ DESIGN_SYSTEM: Sruim Design System v2.0
               ▼                               ▼
 ┌─────────────────────────┐     ┌─────────────────────────┐
 │   Next.js / React Router │     │     Rust Backend        │
-│   (Frontend Container)   │     │   https://reify-sdk.zeabur.internal │
+│   (Frontend Container)   │     │   https://reify-sdk.zeabur.internal:8080 │
 │   Port: 3000             │     │   Port: 8080            │
 └─────────────────────────┘     └─────────────────────────┘
               │                               │
@@ -78,7 +78,7 @@ entry.server.tsx (SSR Entry)
     ├─► loader() 函数执行
     │       │
     │       ▼
-    │   fetch('https://reify-sdk.zeabur.internal/api/daily-world')
+    │   fetch('https://reify-sdk.zeabur.internal:8080/api/daily-world')
     │       │
     │       ▼
     │   Rust Backend 返回 JSON
@@ -495,7 +495,7 @@ DEPLOYMENT:
 │  ┌─────────────────────────────────┐   │
 │  │         Caddy                   │   │
 │  │   - sruim.xin → :3000          │   │
-│  │   - reify-sdk.zeabur.internal → :8080      │   │
+│  │   - reify-sdk.zeabur.internal:8080 → :8080      │   │
 │  │   - 自动 HTTPS (Let's Encrypt) │   │
 │  └─────────────────────────────────┘   │
 │                                         │

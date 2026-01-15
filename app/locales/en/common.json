@@ -44,7 +44,7 @@
     "title": "EPHEMERA",
     "subtitle": "DIGITAL ART GALLERY",
     "bootInit": "[SYS] Initializing Ephemera V2...",
-    "bootConnect": "[NET] Connecting to reify-sdk.zeabur.internal...",
+    "bootConnect": "[NET] Connecting to reify-sdk.zeabur.internal:8080...",
     "bootFetch": "[DAT] Fetching daily zeitgeist...",
     "bootModel": "[3D] Loading GLB model...",
     "bootPost": "[GFX] Preparing post-processing...",

@@ -1,6 +1,6 @@
 /**
  * API v5 Types
- * @see https://reify-sdk.zeabur.internal/api/context/*
+ * @see https://reify-sdk.zeabur.internal:8080/api/context/*
  */
 
 import type { NewsItem } from './api';
