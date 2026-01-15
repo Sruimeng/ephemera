@@ -115,7 +115,7 @@ type AnyContext = DailyContext | HistoryContext | FossilContext
 
 **Block 2: Config** [DONE]
 1. ~~Update `app/constants/meta/service.ts`:~~
-   - ~~Add `API_V5_BASE = 'https://reify-sdk.zeabur.internal:8080'`~~
+   - ~~Add `API_V5_BASE = 'https://api.sruim.xin'`~~
    - ~~Add `APP_ID = '204bb605-dd38-4c3b-90b5-d1055310051b'`~~
    - ~~Add `FALLBACK_MODEL_URL`~~
    - ~~Remove `processModelUrl()` - CF Worker handles proxy~~

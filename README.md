@@ -186,7 +186,7 @@ TRANSITIONS:
 
 ### 4.2 API Integration
 
-**Endpoint**: `https://reify-sdk.zeabur.internal:8080/api/daily-world`
+**Endpoint**: `https://api.sruim.xin/api/daily-world`
 
 **Data Flow**:
 ```typescript
@@ -279,7 +279,7 @@ pnpm clear
 
 ```typescript
 // app/constants/meta/env.ts
-API_BASE: 'https://reify-sdk.zeabur.internal:8080'
+API_BASE: 'https://api.sruim.xin'
 ```
 
 ## 6. Design System
@@ -392,7 +392,7 @@ FROM node:20-alpine AS runner
 
 ## 11. API Reference
 
-**Base URL**: `https://reify-sdk.zeabur.internal:8080`
+**Base URL**: `https://api.sruim.xin`
 
 **Endpoints**:
 - `GET /api/daily-world` - Today's news

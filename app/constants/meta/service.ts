@@ -19,7 +19,7 @@ const ProdBaseUrl = 'https://example.com';
 export const BaseUrl = isDEV ? DevBaseUrl : isPROD ? ProdBaseUrl : StagingBaseUrl;
 
 // API v5
-export const API_V5_BASE = 'https://reify-sdk.zeabur.internal:8080';
+export const API_V5_BASE = 'https://api.sruim.xin';
 export const APP_ID = '204bb605-dd38-4c3b-90b5-d1055310051b';
 
 // Timeouts

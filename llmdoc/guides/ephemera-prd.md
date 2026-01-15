@@ -32,7 +32,7 @@ CORE_TASK:
 ### 1.2 API 端点
 
 ```
-ENDPOINT: GET https://reify-sdk.zeabur.internal:8080/api/daily-world
+ENDPOINT: GET https://api.sruim.xin/api/daily-world
 STATUS: Online
 ```
 

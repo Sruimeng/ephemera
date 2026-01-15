@@ -16,7 +16,7 @@ export interface NewsItem {
 
 /**
  * 后端原始响应 (对应 Rust Struct)
- * API: GET https://reify-sdk.zeabur.internal:8080/api/daily-world
+ * API: GET https://api.sruim.xin/api/daily-world
  */
 export interface DailyWorldData {
   /** 日期 "YYYY-MM-DD" */

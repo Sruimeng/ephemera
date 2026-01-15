@@ -9,7 +9,7 @@ import type { DailyWorldData, NormalizedDailyWorld } from '~/types/api';
 /**
  * @deprecated Use API_V5_BASE from constants/meta/service.ts
  */
-const API_BASE = 'https://reify-sdk.zeabur.internal:8080';
+const API_BASE = 'https://api.sruim.xin';
 
 interface ApiResponse {
   data: DailyWorldData;
